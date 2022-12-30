@@ -1,6 +1,7 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import {
 	Box,
+	Button,
 	Divider,
 	List,
 	ListItem,
@@ -10,10 +11,18 @@ import {
 } from "@mui/material";
 import PublicIcon from "@mui/icons-material/Public";
 
+const pageSize = 50;
+
 const HistoryList = ({ history }) => {
+	const [cursor, setCursor] = useState(pageSize);
+
+	const loadMoreBtnClickHandler = () => {
+		setCursor((prev) => prev + pageSize);
+	};
+
 	return (
 		<List>
-			{history.map((item, idx) => {
+			{history.slice(0, cursor).map((item, idx) => {
 				const timestamp = new Date(item.timestamp);
 
 				return (
@@ -57,6 +66,17 @@ const HistoryList = ({ history }) => {
 					</Fragment>
 				);
 			})}
+			<ListItem>
+				<Button
+					onClick={loadMoreBtnClickHandler}
+					disabled={cursor >= history.length}
+					sx={{
+						marginX: "auto",
+					}}
+				>
+					Load More
+				</Button>
+			</ListItem>
 		</List>
 	);
 };
