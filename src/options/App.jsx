@@ -9,6 +9,7 @@ import { useQuery } from "react-query";
 import HistoryList from "./components/HistoryList";
 import DownloadButton from "./components/DownloadButton";
 import ClearAllButton from "./components/ClearAllButton";
+import PrivateAccessDialog from "./components/PrivateAccessDialog";
 
 const App = () => {
 	const {
@@ -34,6 +35,7 @@ const App = () => {
 
 	return (
 		<Container>
+			<PrivateAccessDialog />
 			<Typography variant="h2" component="h1" align="center">
 				Private History
 			</Typography>

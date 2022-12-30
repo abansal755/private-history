@@ -60,7 +60,7 @@ const ClearAllButton = () => {
 				<DialogContent>
 					<DialogContentText>
 						Are you sure you want to clear all the private browsing
-						history? This action is irreversible
+						history? This action is irreversible.
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
