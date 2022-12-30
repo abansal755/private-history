@@ -7,6 +7,7 @@ module.exports = {
 	entry: {
 		background: "./src/background.js",
 		options: "./src/options/index.js",
+		popup: "./src/popup/index.js",
 	},
 	output: {
 		path: path.resolve(__dirname, "build"),
@@ -27,6 +28,11 @@ module.exports = {
 			template: "./src/options/index.html",
 			filename: "options.html",
 			chunks: ["options"],
+		}),
+		new HtmlWebpackPlugin({
+			template: "./src/popup/index.html",
+			filename: "popup.html",
+			chunks: ["popup"],
 		}),
 	],
 	module: {
