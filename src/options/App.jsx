@@ -1,10 +1,4 @@
-import {
-	Paper,
-	Typography,
-	Container,
-	Box,
-	CircularProgress,
-} from "@mui/material";
+import { Typography, Container, Box, CircularProgress } from "@mui/material";
 import { useQuery } from "react-query";
 import HistoryList from "./components/HistoryList";
 import DownloadButton from "./components/DownloadButton";
@@ -49,9 +43,7 @@ const App = () => {
 				</Box>
 			)}
 			{isSuccess && history.length > 0 && (
-				<Paper elevation={6} sx={{ marginTop: 5, padding: 2 }}>
-					<HistoryList history={history} />
-				</Paper>
+				<HistoryList history={history} />
 			)}
 		</Container>
 	);
