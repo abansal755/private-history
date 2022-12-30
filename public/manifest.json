@@ -1,0 +1,10 @@
+{
+	"name": "private-history",
+	"manifest_version": 3,
+	"version": "1.0.0",
+	"background": {
+		"service_worker": "background.js"
+	},
+	"permissions": ["tabs", "storage", "unlimitedStorage"],
+	"options_page": "options.html"
+}
