@@ -31,7 +31,7 @@ const ClearAllButton = () => {
 
 	const mutation = useMutation(
 		async () => {
-			await chrome.storage.local.clear();
+			await chrome.storage.local.remove("history");
 		},
 		{
 			onMutate: () => {

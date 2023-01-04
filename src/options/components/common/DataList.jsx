@@ -5,6 +5,7 @@ import {
 	Divider,
 	List,
 	ListItem,
+	IconButton,
 	ListItemText,
 	Paper,
 	Stack,
@@ -12,18 +13,20 @@ import {
 	Typography,
 } from "@mui/material";
 import PublicIcon from "@mui/icons-material/Public";
+import StarIcon from "@mui/icons-material/Star";
+import { v4 as uuidv4 } from "uuid";
 
 const pageSize = 50;
 
-const HistoryList = ({ history }) => {
+const DataList = ({ list, DataListItem }) => {
 	const [cursor, setCursor] = useState(pageSize);
 	const [searchText, setSearchText] = useState("");
 
 	// Search
-	let filteredHistory = history;
+	let filteredList = list;
 	if (searchText.length > 0) {
-		filteredHistory = [];
-		history.forEach((item) => {
+		filteredList = [];
+		list.forEach((item) => {
 			let { url, title } = item;
 			url = url.toLowerCase();
 			title = title.toLowerCase();
@@ -43,27 +46,10 @@ const HistoryList = ({ history }) => {
 						type: "url",
 						idx: urlIdx,
 					};
-				filteredHistory.push(newItem);
+				filteredList.push(newItem);
 			}
 		});
 	}
-
-	const getJsx = (item, type) => {
-		if (!item.match || item.match.type !== type) return item[type];
-
-		return (
-			<span>
-				{item[type].slice(0, item.match.idx)}
-				<b>
-					{item[type].slice(
-						item.match.idx,
-						item.match.idx + searchText.length
-					)}
-				</b>
-				{item[type].slice(item.match.idx + searchText.length)}
-			</span>
-		);
-	};
 
 	return (
 		<Fragment>
@@ -85,54 +71,21 @@ const HistoryList = ({ history }) => {
 			</Box>
 			<Paper elevation={6} sx={{ marginY: 2, padding: 2 }}>
 				<List>
-					{filteredHistory.slice(0, cursor).map((item, idx) => {
-						const timestamp = new Date(item.timestamp);
-
+					{filteredList.slice(0, cursor).map((item, idx) => {
 						return (
 							<Fragment key={item.id}>
-								<ListItem>
-									{item.favIconUrl && (
-										<img
-											src={item.favIconUrl}
-											width="32"
-											height="32"
-										/>
-									)}
-									{!item.favIconUrl && <PublicIcon />}
-									<ListItemText
-										primary={getJsx(item, "title")}
-										secondary={getJsx(item, "url")}
-										sx={{
-											marginX: 2,
-											overflow: "hidden",
-										}}
-									/>
-									<Stack>
-										<Box>
-											<Typography
-												variant="subtitle1"
-												sx={{
-													whiteSpace: "nowrap",
-												}}
-											>
-												{timestamp.toLocaleTimeString()}
-											</Typography>
-										</Box>
-										<Box>
-											<Typography variant="subtitle2">
-												{timestamp.toLocaleDateString()}
-											</Typography>
-										</Box>
-									</Stack>
-								</ListItem>
-								{idx !== history.length - 1 && <Divider />}
+								<DataListItem
+									item={item}
+									searchText={searchText}
+								/>
+								{idx !== list.length - 1 && <Divider />}
 							</Fragment>
 						);
 					})}
 					<ListItem>
 						<Button
 							onClick={() => setCursor((prev) => prev + pageSize)}
-							disabled={cursor >= filteredHistory.length}
+							disabled={cursor >= filteredList.length}
 							sx={{
 								marginX: "auto",
 							}}
@@ -146,4 +99,4 @@ const HistoryList = ({ history }) => {
 	);
 };
 
-export default HistoryList;
+export default DataList;

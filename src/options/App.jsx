@@ -1,51 +1,57 @@
-import { Typography, Container, Box, CircularProgress } from "@mui/material";
-import { useQuery } from "react-query";
-import HistoryList from "./components/HistoryList";
-import DownloadButton from "./components/DownloadButton";
-import ClearAllButton from "./components/ClearAllButton";
-import PrivateAccessDialog from "./components/PrivateAccessDialog";
+import History from "./components/History";
+import { Route, Switch } from "react-router-dom";
+import { Fragment, useState } from "react";
+import {
+	Container,
+	Drawer,
+	List,
+	ListItemButton,
+	ListItemText,
+	Typography,
+} from "@mui/material";
+import { Link as BrowserLink } from "react-router-dom";
+import Favourites from "./components/Favourites";
 
 const App = () => {
-	const {
-		data: history,
-		isLoading,
-		isSuccess,
-	} = useQuery("history", async () => {
-		const fromStorage = await chrome.storage.local.get(null);
-		const newData = [];
-		for (const id in fromStorage)
-			newData.push({
-				...fromStorage[id],
-				id,
-			});
-
-		newData.sort((a, b) => {
-			const aDate = new Date(a.timestamp);
-			const bDate = new Date(b.timestamp);
-			return bDate.getTime() - aDate.getTime();
-		});
-		return newData;
-	});
+	const [drawerIdx, setDrawerIdx] = useState(0);
 
 	return (
-		<Container>
-			<PrivateAccessDialog />
-			<Typography variant="h2" component="h1" align="center">
-				Private History
-			</Typography>
-			<Box justifyContent="center" display="flex" marginTop={2}>
-				<ClearAllButton />
-				<DownloadButton history={history} />
-			</Box>
-			{isLoading && (
-				<Box justifyContent="center" display="flex">
-					<CircularProgress />
-				</Box>
-			)}
-			{isSuccess && history.length > 0 && (
-				<HistoryList history={history} />
-			)}
-		</Container>
+		<Fragment>
+			<Drawer variant="permanent">
+				<List>
+					<ListItemButton
+						component={BrowserLink}
+						to="/"
+						selected={drawerIdx === 0}
+						onClick={() => setDrawerIdx(0)}
+					>
+						<ListItemText>History</ListItemText>
+					</ListItemButton>
+					<ListItemButton
+						component={BrowserLink}
+						to="/favourites"
+						selected={drawerIdx === 1}
+						onClick={() => setDrawerIdx(1)}
+					>
+						<ListItemText>Favourites</ListItemText>
+					</ListItemButton>
+				</List>
+			</Drawer>
+			<Container>
+				<Typography variant="h2" component="h1" align="center">
+					Private History
+				</Typography>
+				<Switch>
+					<Route path="/" exact>
+						<History />
+						{/*<Favourites />*/}
+					</Route>
+					<Route path="/favourites">
+						<Favourites />
+					</Route>
+				</Switch>
+			</Container>
+		</Fragment>
 	);
 };
 
