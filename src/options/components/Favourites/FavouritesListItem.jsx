@@ -13,14 +13,15 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useMutation, useQueryClient } from "react-query";
 import SearchText from "../common/SearchText";
 import { useSnackbar } from "notistack";
-import { add as addHistory } from "../../services/History";
+import { remove as removeFavourite } from "../../services/Favourites";
+import { grey } from "@mui/material/colors";
 
 const FavouritesListItem = ({ item, searchText, listSize, idx }) => {
 	const timestamp = new Date(item.timestamp);
 
 	const queryClient = useQueryClient();
 
-	const mutation = useMutation(addHistory(listSize), {
+	const mutation = useMutation(removeFavourite(listSize), {
 		onMutate: (idx) => {
 			const oldFavourites = queryClient.getQueryData("favourites");
 			queryClient.setQueryData("favourites", [
@@ -37,9 +38,15 @@ const FavouritesListItem = ({ item, searchText, listSize, idx }) => {
 
 	const { enqueueSnackbar } = useSnackbar();
 
-	const removeBtnClickHandler = (idx) => {
+	const removeBtnClickHandler = (idx, event) => {
+		event.stopPropagation();
 		enqueueSnackbar("Removed from favourites");
 		mutation.mutate(idx);
+	};
+
+	const itemClickHandler = async () => {
+		await navigator.clipboard.writeText(item.url);
+		enqueueSnackbar("Copied to clipboard");
 	};
 
 	return (
@@ -47,11 +54,26 @@ const FavouritesListItem = ({ item, searchText, listSize, idx }) => {
 			<ListItem
 				secondaryAction={
 					<Tooltip title="Remove">
-						<IconButton onClick={() => removeBtnClickHandler(idx)}>
+						<IconButton
+							onClick={(e) => removeBtnClickHandler(idx, e)}
+						>
 							<DeleteIcon />
 						</IconButton>
 					</Tooltip>
 				}
+				sx={{
+					"&": {
+						cursor: "pointer",
+						borderTopLeftRadius: idx === 0 ? 5 : 0,
+						borderTopRightRadius: idx === 0 ? 5 : 0,
+						borderBottomLeftRadius: idx === listSize - 1 ? 5 : 0,
+						borderBottomRightRadius: idx === listSize - 1 ? 5 : 0,
+					},
+					"&:hover": {
+						backgroundColor: grey[800],
+					},
+				}}
+				onClick={itemClickHandler}
 			>
 				{item.favIconUrl && (
 					<img src={item.favIconUrl} width="32" height="32" />

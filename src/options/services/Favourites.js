@@ -20,3 +20,17 @@ export const add = async (item) => {
 		favourites: [...favourites, getModifiedItem(item)],
 	});
 };
+
+export const remove = (listSize) => {
+	return async (idx) => {
+		const { favourites = [] } = await chrome.storage.local.get(
+			"favourites"
+		);
+		await chrome.storage.local.set({
+			favourites: [
+				...favourites.slice(0, listSize - idx - 1),
+				...favourites.slice(listSize - idx),
+			],
+		});
+	};
+};

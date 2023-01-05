@@ -17,8 +17,9 @@ import {
 	add as addFavourite,
 	getModifiedItem,
 } from "../../services/Favourites";
+import { grey } from "@mui/material/colors";
 
-const HistoryListItem = ({ item, searchText }) => {
+const HistoryListItem = ({ item, searchText, listSize, idx }) => {
 	const timestamp = new Date(item.timestamp);
 
 	const queryClient = useQueryClient();
@@ -38,12 +39,18 @@ const HistoryListItem = ({ item, searchText }) => {
 		},
 	});
 
-	const favouriteBtnClickHandler = (item) => {
+	const favouriteBtnClickHandler = (item, event) => {
+		event.stopPropagation();
 		enqueueSnackbar("Added to favourites");
 		mutation.mutate(item);
 	};
 
 	const { enqueueSnackbar } = useSnackbar();
+
+	const itemClickHandler = async () => {
+		await navigator.clipboard.writeText(item.url);
+		enqueueSnackbar("Copied to clipboard");
+	};
 
 	return (
 		<Fragment>
@@ -51,12 +58,25 @@ const HistoryListItem = ({ item, searchText }) => {
 				secondaryAction={
 					<Tooltip title="Favourite">
 						<IconButton
-							onClick={() => favouriteBtnClickHandler(item)}
+							onClick={(e) => favouriteBtnClickHandler(item, e)}
 						>
 							<StarIcon />
 						</IconButton>
 					</Tooltip>
 				}
+				sx={{
+					"&": {
+						cursor: "pointer",
+						borderTopLeftRadius: idx === 0 ? 5 : 0,
+						borderTopRightRadius: idx === 0 ? 5 : 0,
+						borderBottomLeftRadius: idx === listSize - 1 ? 5 : 0,
+						borderBottomRightRadius: idx === listSize - 1 ? 5 : 0,
+					},
+					"&:hover": {
+						backgroundColor: grey[800],
+					},
+				}}
+				onClick={itemClickHandler}
 			>
 				{item.favIconUrl && (
 					<img src={item.favIconUrl} width="32" height="32" />

@@ -78,7 +78,7 @@ const DataList = ({ list, DataListItem }) => {
 							</Fragment>
 						);
 					})}
-					{list.length === 0 && (
+					{filteredList.length === 0 && (
 						<ListItem>
 							<ListItemText
 								sx={{
@@ -90,7 +90,7 @@ const DataList = ({ list, DataListItem }) => {
 							</ListItemText>
 						</ListItem>
 					)}
-					{list.length > 0 && (
+					{filteredList.length > 0 && (
 						<ListItem>
 							<Button
 								onClick={() =>
