@@ -7,53 +7,48 @@ import {
 	Tooltip,
 	Typography,
 } from "@mui/material";
-import StarIcon from "@mui/icons-material/Star";
 import PublicIcon from "@mui/icons-material/Public";
 import { Fragment } from "react";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { useMutation, useQueryClient } from "react-query";
 import SearchText from "../common/SearchText";
 import { useSnackbar } from "notistack";
-import { useMutation, useQueryClient } from "react-query";
-import {
-	add as addFavourite,
-	getModifiedItem,
-} from "../../services/Favourites";
+import { add as addHistory } from "../../services/History";
 
-const HistoryListItem = ({ item, searchText }) => {
+const FavouritesListItem = ({ item, searchText, listSize, idx }) => {
 	const timestamp = new Date(item.timestamp);
 
 	const queryClient = useQueryClient();
 
-	const mutation = useMutation(addFavourite, {
-		onMutate: (item) => {
+	const mutation = useMutation(addHistory(listSize), {
+		onMutate: (idx) => {
 			const oldFavourites = queryClient.getQueryData("favourites");
 			queryClient.setQueryData("favourites", [
-				...oldFavourites,
-				getModifiedItem(item),
+				...oldFavourites.slice(0, idx),
+				...oldFavourites.slice(idx + 1),
 			]);
 
 			return oldFavourites;
 		},
-		onError: (err, item, oldFavourites) => {
+		onError: (err, idx, oldFavourites) => {
 			queryClient.setQueryData("favourites", oldFavourites);
 		},
 	});
 
-	const favouriteBtnClickHandler = (item) => {
-		enqueueSnackbar("Added to favourites");
-		mutation.mutate(item);
-	};
-
 	const { enqueueSnackbar } = useSnackbar();
+
+	const removeBtnClickHandler = (idx) => {
+		enqueueSnackbar("Removed from favourites");
+		mutation.mutate(idx);
+	};
 
 	return (
 		<Fragment>
 			<ListItem
 				secondaryAction={
-					<Tooltip title="Favourite">
-						<IconButton
-							onClick={() => favouriteBtnClickHandler(item)}
-						>
-							<StarIcon />
+					<Tooltip title="Remove">
+						<IconButton onClick={() => removeBtnClickHandler(idx)}>
+							<DeleteIcon />
 						</IconButton>
 					</Tooltip>
 				}
@@ -104,4 +99,4 @@ const HistoryListItem = ({ item, searchText }) => {
 	);
 };
 
-export default HistoryListItem;
+export default FavouritesListItem;

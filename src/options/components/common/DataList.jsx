@@ -5,16 +5,10 @@ import {
 	Divider,
 	List,
 	ListItem,
-	IconButton,
 	ListItemText,
 	Paper,
-	Stack,
 	TextField,
-	Typography,
 } from "@mui/material";
-import PublicIcon from "@mui/icons-material/Public";
-import StarIcon from "@mui/icons-material/Star";
-import { v4 as uuidv4 } from "uuid";
 
 const pageSize = 50;
 
@@ -77,22 +71,40 @@ const DataList = ({ list, DataListItem }) => {
 								<DataListItem
 									item={item}
 									searchText={searchText}
+									listSize={list.length}
+									idx={idx}
 								/>
 								{idx !== list.length - 1 && <Divider />}
 							</Fragment>
 						);
 					})}
-					<ListItem>
-						<Button
-							onClick={() => setCursor((prev) => prev + pageSize)}
-							disabled={cursor >= filteredList.length}
-							sx={{
-								marginX: "auto",
-							}}
-						>
-							Load More
-						</Button>
-					</ListItem>
+					{list.length === 0 && (
+						<ListItem>
+							<ListItemText
+								sx={{
+									display: "flex",
+									justifyContent: "center",
+								}}
+							>
+								Nothing found here...
+							</ListItemText>
+						</ListItem>
+					)}
+					{list.length > 0 && (
+						<ListItem>
+							<Button
+								onClick={() =>
+									setCursor((prev) => prev + pageSize)
+								}
+								disabled={cursor >= filteredList.length}
+								sx={{
+									marginX: "auto",
+								}}
+							>
+								Load More
+							</Button>
+						</ListItem>
+					)}
 				</List>
 			</Paper>
 		</Fragment>

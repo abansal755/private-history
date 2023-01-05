@@ -1,33 +1,16 @@
 import { useQuery } from "react-query";
-import {
-	Box,
-	Button,
-	CircularProgress,
-	List,
-	ListItem,
-	ListItemText,
-	Paper,
-} from "@mui/material";
-import { Fragment, useState } from "react";
-import PublicIcon from "@mui/icons-material/Public";
+import { Box, CircularProgress } from "@mui/material";
+import { Fragment } from "react";
 import DataList from "./common/DataList";
-import HistoryListItem from "./History/HistoryListItem";
-import FavouritesListItem from "./FavouritesListItem";
-
-const pageSize = 50;
+import FavouritesListItem from "./Favourites/FavouritesListItem";
+import { fetch as fetchFavourites } from "../services/Favourites";
 
 const Favourites = () => {
 	const {
 		data: favourites,
 		isLoading,
 		isSuccess,
-	} = useQuery("favourites", async () => {
-		const { favourites = [] } = await chrome.storage.local.get(
-			"favourites"
-		);
-		favourites.reverse();
-		return favourites;
-	});
+	} = useQuery("favourites", fetchFavourites);
 
 	return (
 		<Fragment>
@@ -36,7 +19,7 @@ const Favourites = () => {
 					<CircularProgress />
 				</Box>
 			)}
-			{isSuccess && favourites.length > 0 && (
+			{isSuccess && (
 				<DataList list={favourites} DataListItem={FavouritesListItem} />
 			)}
 		</Fragment>
