@@ -9,14 +9,26 @@ import {
 	Typography,
 } from "@mui/material";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
-import { Link as BrowserLink } from "react-router-dom";
+import { Link as BrowserLink, useHistory } from "react-router-dom";
 import { Fragment, useState } from "react";
+import { grey } from "@mui/material/colors";
 
 const drawerStrings = ["HISTORY", "FAVOURITES"];
+const drawerUrls = ["/", "/favourites"];
 
 const Navbar = () => {
 	const [drawerIdx, setDrawerIdx] = useState(0);
-	const [isDrawerOpen, setIsDrawerOpen] = useState(true);
+	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+	const history = useHistory();
+
+	const collapsedIndicatorClickHandler = () => {
+		setDrawerIdx((prev) => {
+			const next = (prev + 1) % drawerStrings.length;
+			history.push(drawerUrls[next]);
+			return next;
+		});
+	};
 
 	return (
 		<Drawer variant="permanent">
@@ -25,7 +37,7 @@ const Navbar = () => {
 					sx={{
 						width: isDrawerOpen ? "250px" : "72px",
 						transition: "width 300ms",
-						height: "100vh",
+						height: "100%",
 						overflow: "hidden",
 					}}
 				>
@@ -92,11 +104,18 @@ const Navbar = () => {
 							return (
 								<List
 									sx={{
-										height: "100%",
-										display: "flex",
-										flexDirection: "column",
-										justifyContent: "center",
+										"&": {
+											height: "100%",
+											display: "flex",
+											flexDirection: "column",
+											justifyContent: "center",
+											cursor: "pointer",
+										},
+										"&:hover": {
+											backgroundColor: grey[900],
+										},
 									}}
+									onClick={collapsedIndicatorClickHandler}
 								>
 									{arr.map((char, idx) => (
 										<ListItem
