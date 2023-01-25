@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
 	entry: {
-		background: "./src/background.js",
+		background: "./src/background/index.js",
 		options: "./src/options/index.js",
 		popup: "./src/popup/index.js",
 	},

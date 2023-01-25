@@ -13,8 +13,8 @@ import { Link as BrowserLink, useHistory } from "react-router-dom";
 import { Fragment, useState } from "react";
 import { grey } from "@mui/material/colors";
 
-const drawerStrings = ["HISTORY", "FAVOURITES"];
-const drawerUrls = ["/", "/favourites"];
+const drawerStrings = ["History", "Favourites", "Sessions"];
+const drawerUrls = ["/", "/favourites", "/sessions"];
 
 const Navbar = () => {
 	const [drawerIdx, setDrawerIdx] = useState(0);
@@ -58,36 +58,24 @@ const Navbar = () => {
 					</ListItem>
 					{isDrawerOpen && (
 						<Fragment>
-							<ListItemButton
-								component={BrowserLink}
-								to="/"
-								selected={drawerIdx === 0}
-								onClick={() => setDrawerIdx(0)}
-							>
-								<ListItemText
-									sx={{
-										justifyContent: "center",
-										display: "flex",
-									}}
+							{drawerStrings.map((str, idx) => (
+								<ListItemButton
+									component={BrowserLink}
+									to={drawerUrls[idx]}
+									selected={drawerIdx === idx}
+									onClick={() => setDrawerIdx(idx)}
+									key={idx}
 								>
-									History
-								</ListItemText>
-							</ListItemButton>
-							<ListItemButton
-								component={BrowserLink}
-								to="/favourites"
-								selected={drawerIdx === 1}
-								onClick={() => setDrawerIdx(1)}
-							>
-								<ListItemText
-									sx={{
-										justifyContent: "center",
-										display: "flex",
-									}}
-								>
-									Favourites
-								</ListItemText>
-							</ListItemButton>
+									<ListItemText
+										sx={{
+											justifyContent: "center",
+											display: "flex",
+										}}
+									>
+										{str}
+									</ListItemText>
+								</ListItemButton>
+							))}
 						</Fragment>
 					)}
 					{!isDrawerOpen &&
@@ -126,7 +114,7 @@ const Navbar = () => {
 											}}
 										>
 											<Typography variant="subtitle1">
-												{char}
+												{char.toUpperCase()}
 											</Typography>
 										</ListItem>
 									))}

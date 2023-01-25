@@ -6,6 +6,7 @@ import Favourites from "./components/Favourites";
 import Navbar from "./components/common/Navbar";
 import { useQueryClient } from "react-query";
 import { fetch as fetchFavourites } from "./services/Favourites";
+import Sessions from "./components/Sessions";
 
 const App = () => {
 	const queryClient = useQueryClient();
@@ -27,6 +28,9 @@ const App = () => {
 					</Route>
 					<Route path="/favourites">
 						<Favourites />
+					</Route>
+					<Route path="/sessions">
+						<Sessions />
 					</Route>
 				</Switch>
 			</Container>
