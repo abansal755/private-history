@@ -15,7 +15,8 @@ chrome.windows.onRemoved.addListener(async (windowId) => {
 		const newSession = newSessions[windowId];
 		newSession.timestamp = new Date().toUTCString();
 		delete newSessions[windowId];
-		newSessions[uuidv4()] = newSession;
+		if (Object.keys(newSession).length > 1)
+			newSessions[uuidv4()] = newSession;
 		await chrome.storage.local.set({ sessions: newSessions });
 	}
 });
