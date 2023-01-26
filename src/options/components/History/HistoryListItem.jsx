@@ -81,7 +81,7 @@ const HistoryListItem = ({ item, searchText, listSize, idx }) => {
 				{item.favIconUrl && (
 					<img src={item.favIconUrl} width="32" height="32" />
 				)}
-				{!item.favIconUrl && <PublicIcon />}
+				{!item.favIconUrl && <PublicIcon sx={{ fontSize: 32 }} />}
 				<ListItemText
 					primary={
 						<SearchText

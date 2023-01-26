@@ -37,7 +37,7 @@ const TabsList = ({ session }) => {
 					{tab.favIconUrl && (
 						<img src={tab.favIconUrl} width="32" height="32" />
 					)}
-					{!tab.favIconUrl && <PublicIcon />}
+					{!tab.favIconUrl && <PublicIcon sx={{ fontSize: 32 }} />}
 					<ListItemText
 						primary={tab.title}
 						secondary={tab.url}
