@@ -8,6 +8,7 @@ import {
 	ListItemText,
 	Paper,
 	TextField,
+	Typography,
 } from "@mui/material";
 
 const pageSize = 50;
@@ -64,6 +65,12 @@ const DataList = ({ list, DataListItem }) => {
 				</Button>
 			</Box>
 			<Paper elevation={6} sx={{ marginY: 2, padding: 2 }}>
+				{filteredList.length > 0 && (
+					<Typography textAlign="center">
+						Showing {Math.min(filteredList.length, cursor)} results
+						out of {filteredList.length}
+					</Typography>
+				)}
 				<List>
 					{filteredList.slice(0, cursor).map((item, idx) => {
 						return (

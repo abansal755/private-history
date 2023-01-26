@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { fetch as fetchSessions } from "../services/Sessions";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import {
 	Accordion,
 	AccordionDetails,
@@ -18,6 +18,8 @@ import TabsList from "./Sessions/TabsList";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { remove as removeSession } from "../services/Sessions";
 import { useSnackbar } from "notistack";
+
+const pageSize = 50;
 
 const Sessions = () => {
 	const {
@@ -63,6 +65,8 @@ const Sessions = () => {
 		};
 	};
 
+	const [cursor, setCursor] = useState(pageSize);
+
 	return (
 		<Fragment>
 			{isLoading && (
@@ -85,64 +89,85 @@ const Sessions = () => {
 							Nothing found here...
 						</Paper>
 					)}
-					{sessions.length > 0 &&
-						sessions.map((session, idx) => (
-							<Accordion key={session.id}>
-								<AccordionSummary
-									expandIcon={<ExpandMoreIcon />}
+					{sessions.length > 0 && (
+						<Box
+							display="flex"
+							justifyContent="center"
+							marginBottom={2}
+						>
+							<Typography>
+								Showing {Math.min(cursor, sessions.length)}{" "}
+								results out of {sessions.length}
+							</Typography>
+						</Box>
+					)}
+					{sessions.slice(0, cursor).map((session, idx) => (
+						<Accordion key={session.id}>
+							<AccordionSummary expandIcon={<ExpandMoreIcon />}>
+								<Box
+									display="flex"
+									justifyContent="space-between"
+									width="100%"
+									alignItems="center"
+									marginRight={2}
 								>
-									<Box
-										display="flex"
-										justifyContent="space-between"
-										width="100%"
-										alignItems="center"
-										marginRight={2}
-									>
-										<Stack>
-											<Box>
-												<Typography
-													variant="subtitle1"
-													sx={{
-														whiteSpace: "nowrap",
-													}}
-												>
-													{new Date(
-														session.timestamp
-													).toLocaleTimeString()}
-												</Typography>
-											</Box>
-											<Box>
-												<Typography variant="subtitle2">
-													{new Date(
-														session.timestamp
-													).toLocaleDateString()}
-												</Typography>
-											</Box>
-										</Stack>
+									<Stack>
 										<Box>
-											<Button
-												onClick={openInIncognitoBtnClickHandler(
-													session
-												)}
+											<Typography
+												variant="subtitle1"
+												sx={{
+													whiteSpace: "nowrap",
+												}}
 											>
-												Open in Incognito
-											</Button>
-											<IconButton
-												onClick={deleteBtnClickHandler(
-													session,
-													idx
-												)}
-											>
-												<DeleteIcon />
-											</IconButton>
+												{new Date(
+													session.timestamp
+												).toLocaleTimeString()}
+											</Typography>
 										</Box>
+										<Box>
+											<Typography variant="subtitle2">
+												{new Date(
+													session.timestamp
+												).toLocaleDateString()}
+											</Typography>
+										</Box>
+									</Stack>
+									<Box>
+										<Button
+											onClick={openInIncognitoBtnClickHandler(
+												session
+											)}
+										>
+											Open in Incognito
+										</Button>
+										<IconButton
+											onClick={deleteBtnClickHandler(
+												session,
+												idx
+											)}
+										>
+											<DeleteIcon />
+										</IconButton>
 									</Box>
-								</AccordionSummary>
-								<AccordionDetails>
-									<TabsList session={session} />
-								</AccordionDetails>
-							</Accordion>
-						))}
+								</Box>
+							</AccordionSummary>
+							<AccordionDetails>
+								<TabsList session={session} />
+							</AccordionDetails>
+						</Accordion>
+					))}
+					<Box display="flex" justifyContent="center" marginTop={2}>
+						{sessions.length > 0 && (
+							<Button
+								onClick={() =>
+									setCursor((prev) => prev + pageSize)
+								}
+								disabled={cursor >= sessions.length}
+							>
+								Load More
+							</Button>
+						)}
+					</Box>
 				</Box>
 			)}
 		</Fragment>

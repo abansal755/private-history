@@ -68,6 +68,7 @@ const FavouritesListItem = ({ item, searchText, listSize, idx }) => {
 						borderTopRightRadius: idx === 0 ? 5 : 0,
 						borderBottomLeftRadius: idx === listSize - 1 ? 5 : 0,
 						borderBottomRightRadius: idx === listSize - 1 ? 5 : 0,
+						transition: "background-color 300ms",
 					},
 					"&:hover": {
 						backgroundColor: grey[800],
