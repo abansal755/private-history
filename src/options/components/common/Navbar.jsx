@@ -50,7 +50,8 @@ const Navbar = () => {
 								transform: `rotate(${
 									isDrawerOpen ? 0 : 180
 								}deg)`,
-								transition: "transform 300ms",
+								transition:
+									"transform 300ms, background-color 300ms",
 							}}
 						>
 							<NavigateBeforeIcon />
@@ -98,6 +99,8 @@ const Navbar = () => {
 											flexDirection: "column",
 											justifyContent: "center",
 											cursor: "pointer",
+											transition:
+												"background-color 300ms",
 										},
 										"&:hover": {
 											backgroundColor: grey[900],

@@ -6,16 +6,14 @@ import {
 	AccordionDetails,
 	AccordionSummary,
 	Box,
+	Button,
 	CircularProgress,
-	List,
-	ListItem,
-	ListItemText,
 	Paper,
 	Stack,
 	Typography,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import PublicIcon from "@mui/icons-material/Public";
+import TabsList from "./Sessions/TabsList";
 
 const Sessions = () => {
 	const {
@@ -23,6 +21,17 @@ const Sessions = () => {
 		isLoading,
 		isSuccess,
 	} = useQuery("sessions", fetchSessions);
+
+	const openInIncognitoBtnClickHandler = (session) => {
+		return (e) => {
+			e.stopPropagation();
+			chrome.windows.create({
+				incognito: true,
+				state: "maximized",
+				url: session.tabs.map((tab) => tab.url),
+			});
+		};
+	};
 
 	return (
 		<Fragment>
@@ -52,50 +61,45 @@ const Sessions = () => {
 								<AccordionSummary
 									expandIcon={<ExpandMoreIcon />}
 								>
-									<Stack>
-										<Box>
-											<Typography
-												variant="subtitle1"
-												sx={{
-													whiteSpace: "nowrap",
-												}}
-											>
-												{new Date(
-													session.timestamp
-												).toLocaleTimeString()}
-											</Typography>
-										</Box>
-										<Box>
-											<Typography variant="subtitle2">
-												{new Date(
-													session.timestamp
-												).toLocaleDateString()}
-											</Typography>
-										</Box>
-									</Stack>
+									<Box
+										display="flex"
+										justifyContent="space-between"
+										width="100%"
+										alignItems="center"
+										marginRight={2}
+									>
+										<Stack>
+											<Box>
+												<Typography
+													variant="subtitle1"
+													sx={{
+														whiteSpace: "nowrap",
+													}}
+												>
+													{new Date(
+														session.timestamp
+													).toLocaleTimeString()}
+												</Typography>
+											</Box>
+											<Box>
+												<Typography variant="subtitle2">
+													{new Date(
+														session.timestamp
+													).toLocaleDateString()}
+												</Typography>
+											</Box>
+										</Stack>
+										<Button
+											onClick={openInIncognitoBtnClickHandler(
+												session
+											)}
+										>
+											Open in Incognito
+										</Button>
+									</Box>
 								</AccordionSummary>
 								<AccordionDetails>
-									<List>
-										{session.tabs.map((tab, idx) => (
-											<ListItem key={idx}>
-												{tab.favIconUrl && (
-													<img
-														src={tab.favIconUrl}
-														width="32"
-														height="32"
-													/>
-												)}
-												{!tab.favIconUrl && (
-													<PublicIcon />
-												)}
-												<ListItemText
-													primary={tab.title}
-													secondary={tab.url}
-													sx={{ marginX: 2 }}
-												/>
-											</ListItem>
-										))}
-									</List>
+									<TabsList session={session} />
 								</AccordionDetails>
 							</Accordion>
 						))}
