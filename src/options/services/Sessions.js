@@ -23,3 +23,12 @@ export const fetch = async () => {
 	});
 	return sessions;
 };
+
+export const remove = async ({ id }) => {
+	const { sessions = {} } = await chrome.storage.local.get("sessions");
+	const newSessions = { ...sessions };
+	delete newSessions[id];
+	await chrome.storage.local.set({
+		sessions: newSessions,
+	});
+};

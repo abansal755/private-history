@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { fetch as fetchSessions } from "../services/Sessions";
 import { Fragment } from "react";
 import {
@@ -8,12 +8,16 @@ import {
 	Box,
 	Button,
 	CircularProgress,
+	IconButton,
 	Paper,
 	Stack,
 	Typography,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import TabsList from "./Sessions/TabsList";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { remove as removeSession } from "../services/Sessions";
+import { useSnackbar } from "notistack";
 
 const Sessions = () => {
 	const {
@@ -30,6 +34,32 @@ const Sessions = () => {
 				state: "maximized",
 				url: session.tabs.map((tab) => tab.url),
 			});
+		};
+	};
+
+	const queryClient = useQueryClient();
+
+	const mutation = useMutation(removeSession, {
+		onMutate: ({ id, idx }) => {
+			const oldSessions = queryClient.getQueryData("sessions");
+			queryClient.setQueryData("sessions", [
+				...oldSessions.slice(0, idx),
+				...oldSessions.slice(idx + 1),
+			]);
+			return oldSessions;
+		},
+		onError: (err, { id, idx }, oldSessions) => {
+			queryClient.setQueryData("sessions", oldSessions);
+		},
+	});
+
+	const { enqueueSnackbar } = useSnackbar();
+
+	const deleteBtnClickHandler = (session, idx) => {
+		return (e) => {
+			e.stopPropagation();
+			enqueueSnackbar("Removed from sessions");
+			mutation.mutate({ id: session.id, idx });
 		};
 	};
 
@@ -56,7 +86,7 @@ const Sessions = () => {
 						</Paper>
 					)}
 					{sessions.length > 0 &&
-						sessions.map((session) => (
+						sessions.map((session, idx) => (
 							<Accordion key={session.id}>
 								<AccordionSummary
 									expandIcon={<ExpandMoreIcon />}
@@ -89,13 +119,23 @@ const Sessions = () => {
 												</Typography>
 											</Box>
 										</Stack>
-										<Button
-											onClick={openInIncognitoBtnClickHandler(
-												session
-											)}
-										>
-											Open in Incognito
-										</Button>
+										<Box>
+											<Button
+												onClick={openInIncognitoBtnClickHandler(
+													session
+												)}
+											>
+												Open in Incognito
+											</Button>
+											<IconButton
+												onClick={deleteBtnClickHandler(
+													session,
+													idx
+												)}
+											>
+												<DeleteIcon />
+											</IconButton>
+										</Box>
 									</Box>
 								</AccordionSummary>
 								<AccordionDetails>
