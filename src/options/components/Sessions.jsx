@@ -11,6 +11,7 @@ import {
 	IconButton,
 	Paper,
 	Stack,
+	Tooltip,
 	Typography,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -18,6 +19,7 @@ import TabsList from "./Sessions/TabsList";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { remove as removeSession } from "../services/Sessions";
 import { useSnackbar } from "notistack";
+import FavIconGroup from "./Sessions/FavIconGroup";
 
 const pageSize = 50;
 
@@ -111,27 +113,30 @@ const Sessions = () => {
 									alignItems="center"
 									marginRight={2}
 								>
-									<Stack>
-										<Box>
-											<Typography
-												variant="subtitle1"
-												sx={{
-													whiteSpace: "nowrap",
-												}}
-											>
-												{new Date(
-													session.timestamp
-												).toLocaleTimeString()}
-											</Typography>
-										</Box>
-										<Box>
-											<Typography variant="subtitle2">
-												{new Date(
-													session.timestamp
-												).toLocaleDateString()}
-											</Typography>
-										</Box>
-									</Stack>
+									<Box display="flex">
+										<FavIconGroup session={session} />
+										<Stack>
+											<Box>
+												<Typography
+													variant="subtitle1"
+													sx={{
+														whiteSpace: "nowrap",
+													}}
+												>
+													{new Date(
+														session.timestamp
+													).toLocaleTimeString()}
+												</Typography>
+											</Box>
+											<Box>
+												<Typography variant="subtitle2">
+													{new Date(
+														session.timestamp
+													).toLocaleDateString()}
+												</Typography>
+											</Box>
+										</Stack>
+									</Box>
 									<Box>
 										<Button
 											onClick={openInIncognitoBtnClickHandler(
@@ -140,14 +145,16 @@ const Sessions = () => {
 										>
 											Open in Incognito
 										</Button>
-										<IconButton
-											onClick={deleteBtnClickHandler(
-												session,
-												idx
-											)}
-										>
-											<DeleteIcon />
-										</IconButton>
+										<Tooltip title="Remove">
+											<IconButton
+												onClick={deleteBtnClickHandler(
+													session,
+													idx
+												)}
+											>
+												<DeleteIcon />
+											</IconButton>
+										</Tooltip>
 									</Box>
 								</Box>
 							</AccordionSummary>
