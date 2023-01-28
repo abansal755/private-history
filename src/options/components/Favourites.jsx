@@ -4,6 +4,7 @@ import { Fragment } from "react";
 import DataList from "./common/DataList";
 import FavouritesListItem from "./Favourites/FavouritesListItem";
 import { fetch as fetchFavourites } from "../services/Favourites";
+import LoadingFallback from "./common/LoadingFallback";
 
 const Favourites = () => {
 	const {
@@ -14,11 +15,7 @@ const Favourites = () => {
 
 	return (
 		<Fragment>
-			{isLoading && (
-				<Box justifyContent="center" display="flex">
-					<CircularProgress />
-				</Box>
-			)}
+			{isLoading && <LoadingFallback />}
 			{isSuccess && (
 				<DataList list={favourites} DataListItem={FavouritesListItem} />
 			)}

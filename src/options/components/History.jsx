@@ -7,6 +7,7 @@ import PrivateAccessDialog from "./History/PrivateAccessDialog";
 import { Fragment } from "react";
 import HistoryListItem from "./History/HistoryListItem";
 import { fetch as fetchHistory } from "../services/History";
+import LoadingFallback from "./common/LoadingFallback";
 
 const History = () => {
 	const {
@@ -22,11 +23,7 @@ const History = () => {
 				<ClearAllButton />
 				<DownloadButton history={history} />
 			</Box>
-			{isLoading && (
-				<Box justifyContent="center" display="flex">
-					<CircularProgress />
-				</Box>
-			)}
+			{isLoading && <LoadingFallback />}
 			{isSuccess && (
 				<DataList list={history} DataListItem={HistoryListItem} />
 			)}

@@ -1,12 +1,13 @@
 import History from "./components/History";
 import { Route, Switch } from "react-router-dom";
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, lazy, Suspense } from "react";
 import { Container, Typography } from "@mui/material";
-import Favourites from "./components/Favourites";
+const Favourites = lazy(() => import("./components/Favourites"));
 import Navbar from "./components/common/Navbar";
 import { useQueryClient } from "react-query";
 import { fetch as fetchFavourites } from "./services/Favourites";
-import Sessions from "./components/Sessions";
+import LoadingFallback from "./components/common/LoadingFallback";
+const Sessions = lazy(() => import("./components/Sessions"));
 
 const App = () => {
 	const queryClient = useQueryClient();
@@ -27,10 +28,14 @@ const App = () => {
 						<History />
 					</Route>
 					<Route path="/favourites">
-						<Favourites />
+						<Suspense fallback={<LoadingFallback />}>
+							<Favourites />
+						</Suspense>
 					</Route>
 					<Route path="/sessions">
-						<Sessions />
+						<Suspense fallback={<LoadingFallback />}>
+							<Sessions />
+						</Suspense>
 					</Route>
 				</Switch>
 			</Container>

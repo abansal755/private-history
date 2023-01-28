@@ -20,6 +20,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { remove as removeSession } from "../services/Sessions";
 import { useSnackbar } from "notistack";
 import FavIconGroup from "./Sessions/FavIconGroup";
+import LoadingFallback from "./common/LoadingFallback";
 
 const pageSize = 50;
 
@@ -71,11 +72,7 @@ const Sessions = () => {
 
 	return (
 		<Fragment>
-			{isLoading && (
-				<Box justifyContent="center" display="flex">
-					<CircularProgress />
-				</Box>
-			)}
+			{isLoading && <LoadingFallback />}
 			{isSuccess && (
 				<Box sx={{ marginTop: 3 }}>
 					{sessions.length === 0 && (

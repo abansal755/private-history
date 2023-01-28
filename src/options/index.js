@@ -4,7 +4,7 @@ import { CssBaseline } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import App from "./App";
-import { BrowserRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router-dom";
 import { SnackbarProvider } from "notistack";
 import SnackbarActions from "./components/common/SnackbarActions";
 
@@ -26,11 +26,11 @@ root.render(
 	>
 		<ThemeProvider theme={darkTheme}>
 			<QueryClientProvider client={queryClient}>
-				<BrowserRouter basename="/options.html">
+				<MemoryRouter basename="/options.html">
 					<ReactQueryDevtools initialIsOpen={false} />
 					<CssBaseline />
 					<App />
-				</BrowserRouter>
+				</MemoryRouter>
 			</QueryClientProvider>
 		</ThemeProvider>
 	</SnackbarProvider>
