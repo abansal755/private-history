@@ -8,6 +8,7 @@ import { useQueryClient } from "react-query";
 import { fetch as fetchFavourites } from "./services/Favourites";
 import LoadingFallback from "./components/common/LoadingFallback";
 const Sessions = lazy(() => import("./components/Sessions"));
+const Settings = lazy(() => import("./components/Settings"));
 
 const App = () => {
 	const queryClient = useQueryClient();
@@ -35,6 +36,11 @@ const App = () => {
 					<Route path="/sessions">
 						<Suspense fallback={<LoadingFallback />}>
 							<Sessions />
+						</Suspense>
+					</Route>
+					<Route path="/settings">
+						<Suspense fallback={<LoadingFallback />}>
+							<Settings />
 						</Suspense>
 					</Route>
 				</Switch>

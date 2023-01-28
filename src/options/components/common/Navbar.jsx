@@ -13,14 +13,18 @@ import { Link as BrowserLink, useHistory } from "react-router-dom";
 import { Fragment, useState } from "react";
 import { grey } from "@mui/material/colors";
 
-const drawerStrings = ["History", "Favourites", "Sessions"];
-const drawerUrls = ["/", "/favourites", "/sessions"];
+const drawerStrings = ["History", "Favourites", "Sessions", "Settings"];
+const drawerUrls = ["/", "/favourites", "/sessions", "/settings"];
 
 const Navbar = () => {
-	const [drawerIdx, setDrawerIdx] = useState(0);
-	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
 	const history = useHistory();
+	const [drawerIdx, setDrawerIdx] = useState(() => {
+		const initPath = history.location.pathname;
+		const initIdx = drawerUrls.indexOf(initPath);
+		return initIdx;
+	});
+
+	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
 	const collapsedIndicatorClickHandler = () => {
 		setDrawerIdx((prev) => {
@@ -116,7 +120,7 @@ const Navbar = () => {
 												justifyContent: "center",
 											}}
 										>
-											<Typography variant="subtitle1">
+											<Typography variant="h5">
 												{char.toUpperCase()}
 											</Typography>
 										</ListItem>

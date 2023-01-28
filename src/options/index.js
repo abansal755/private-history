@@ -26,7 +26,16 @@ root.render(
 	>
 		<ThemeProvider theme={darkTheme}>
 			<QueryClientProvider client={queryClient}>
-				<MemoryRouter basename="/options.html">
+				<MemoryRouter
+					basename="/options.html"
+					initialEntries={[
+						"/",
+						"/favourites",
+						"/sessions",
+						"/settings",
+					]}
+					initialIndex={0}
+				>
 					<ReactQueryDevtools initialIsOpen={false} />
 					<CssBaseline />
 					<App />
