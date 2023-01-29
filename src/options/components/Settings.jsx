@@ -15,6 +15,14 @@ import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import UploadIcon from "@mui/icons-material/Upload";
 
 const Settings = () => {
+	const { enqueueSnackbar } = useSnackbar();
+
+	const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
+	const [isImportErrorDialogOpen, setIsImportErrorDialogOpen] =
+		useState(false);
+	const [isImportWarningDialogOpen, setIsImportWarningDialogOpen] =
+		useState(false);
+
 	const exportBtnClickHandler = async () => {
 		const data = await chrome.storage.local.get([
 			"history",
@@ -38,14 +46,6 @@ const Settings = () => {
 		setIsClearDialogOpen(false);
 		enqueueSnackbar("Cleared all data");
 	};
-
-	const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
-	const [isImportErrorDialogOpen, setIsImportErrorDialogOpen] =
-		useState(false);
-	const [isImportWarningDialogOpen, setIsImportWarningDialogOpen] =
-		useState(false);
-
-	const { enqueueSnackbar } = useSnackbar();
 
 	const importBtnClickHandler = () => {
 		setIsImportWarningDialogOpen(false);

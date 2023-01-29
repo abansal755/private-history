@@ -20,10 +20,10 @@ import {
 import { grey } from "@mui/material/colors";
 
 const HistoryListItem = ({ item, searchText, listSize, idx }) => {
-	const timestamp = new Date(item.timestamp);
-
 	const queryClient = useQueryClient();
+	const { enqueueSnackbar } = useSnackbar();
 
+	const timestamp = new Date(item.timestamp);
 	const mutation = useMutation(addFavourite, {
 		onMutate: (item) => {
 			const oldFavourites = queryClient.getQueryData("favourites");
@@ -44,8 +44,6 @@ const HistoryListItem = ({ item, searchText, listSize, idx }) => {
 		enqueueSnackbar("Added to favourites");
 		mutation.mutate(item);
 	};
-
-	const { enqueueSnackbar } = useSnackbar();
 
 	const itemClickHandler = async () => {
 		await navigator.clipboard.writeText(item.url);

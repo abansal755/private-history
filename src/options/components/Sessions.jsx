@@ -30,19 +30,10 @@ const Sessions = () => {
 		isLoading,
 		isSuccess,
 	} = useQuery("sessions", fetchSessions);
-
-	const openInIncognitoBtnClickHandler = (session) => {
-		return (e) => {
-			e.stopPropagation();
-			chrome.windows.create({
-				incognito: true,
-				state: "maximized",
-				url: session.tabs.map((tab) => tab.url),
-			});
-		};
-	};
-
 	const queryClient = useQueryClient();
+	const { enqueueSnackbar } = useSnackbar();
+
+	const [cursor, setCursor] = useState(pageSize);
 
 	const mutation = useMutation(removeSession, {
 		onMutate: ({ id, idx }) => {
@@ -58,7 +49,16 @@ const Sessions = () => {
 		},
 	});
 
-	const { enqueueSnackbar } = useSnackbar();
+	const openInIncognitoBtnClickHandler = (session) => {
+		return (e) => {
+			e.stopPropagation();
+			chrome.windows.create({
+				incognito: true,
+				state: "maximized",
+				url: session.tabs.map((tab) => tab.url),
+			});
+		};
+	};
 
 	const deleteBtnClickHandler = (session, idx) => {
 		return (e) => {
@@ -67,8 +67,6 @@ const Sessions = () => {
 			mutation.mutate({ id: session.id, idx });
 		};
 	};
-
-	const [cursor, setCursor] = useState(pageSize);
 
 	return (
 		<Fragment>

@@ -17,10 +17,10 @@ import { remove as removeFavourite } from "../../services/Favourites";
 import { grey } from "@mui/material/colors";
 
 const FavouritesListItem = ({ item, searchText, listSize, idx }) => {
-	const timestamp = new Date(item.timestamp);
-
+	const { enqueueSnackbar } = useSnackbar();
 	const queryClient = useQueryClient();
 
+	const timestamp = new Date(item.timestamp);
 	const mutation = useMutation(removeFavourite(listSize), {
 		onMutate: (idx) => {
 			const oldFavourites = queryClient.getQueryData("favourites");
@@ -35,8 +35,6 @@ const FavouritesListItem = ({ item, searchText, listSize, idx }) => {
 			queryClient.setQueryData("favourites", oldFavourites);
 		},
 	});
-
-	const { enqueueSnackbar } = useSnackbar();
 
 	const removeBtnClickHandler = (idx, event) => {
 		event.stopPropagation();

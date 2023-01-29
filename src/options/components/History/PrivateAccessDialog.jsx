@@ -11,20 +11,16 @@ import { useEffect, useState } from "react";
 const PrivateAccessDialog = () => {
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-	const dialogCloseHandler = () => {
-		setIsDialogOpen(false);
-	};
-
-	const dialogOpenHandler = () => {
-		setIsDialogOpen(true);
-	};
-
 	useEffect(() => {
 		(async () => {
 			const isAllowed = await chrome.extension.isAllowedIncognitoAccess();
 			if (!isAllowed) setIsDialogOpen(true);
 		})();
 	}, []);
+
+	const dialogCloseHandler = () => {
+		setIsDialogOpen(false);
+	};
 
 	return (
 		<Dialog open={isDialogOpen} onClose={dialogCloseHandler}>
