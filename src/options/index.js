@@ -7,6 +7,7 @@ import App from "./App";
 import { MemoryRouter } from "react-router-dom";
 import { SnackbarProvider } from "notistack";
 import SnackbarActions from "./components/common/SnackbarActions";
+import { Validator } from "jsonschema";
 
 const darkTheme = createTheme({
 	palette: {

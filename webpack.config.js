@@ -51,5 +51,8 @@ module.exports = {
 	},
 	resolve: {
 		extensions: [".jsx", ".js"],
+		fallback: {
+			url: require.resolve("url"),
+		},
 	},
 };

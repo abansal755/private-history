@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useSnackbar } from "notistack";
+import validateJSON from "../utils/validateJSON";
 
 const Settings = () => {
 	const exportBtnClickHandler = async () => {
@@ -31,19 +32,12 @@ const Settings = () => {
 
 	const clearHandler = async () => {
 		await chrome.storage.local.clear();
-		dialogCloseHandler();
+		setIsClearDialogOpen(false);
 		enqueueSnackbar("Cleared all data");
 	};
 
-	const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-	const dialogCloseHandler = () => {
-		setIsDialogOpen(false);
-	};
-
-	const dialogOpenHandler = () => {
-		setIsDialogOpen(true);
-	};
+	const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
+	const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
 
 	const { enqueueSnackbar } = useSnackbar();
 
@@ -59,10 +53,14 @@ const Settings = () => {
 			reader.addEventListener("load", async () => {
 				try {
 					const json = JSON.parse(reader.result);
-					//TODO: validate json
+					//validate json
+					if (!validateJSON(json)) throw new Error("Invalid JSON");
 					await chrome.storage.local.set(json);
 					enqueueSnackbar("Successfully imported all data");
-				} catch {}
+				} catch (err) {
+					console.error(err);
+					setIsImportDialogOpen(true);
+				}
 			});
 			reader.readAsText(file);
 		});
@@ -74,10 +72,16 @@ const Settings = () => {
 
 	return (
 		<Box display="flex" justifyContent="center" marginTop={3}>
-			<Button variant="contained" onClick={dialogOpenHandler}>
+			<Button
+				variant="contained"
+				onClick={() => setIsClearDialogOpen(true)}
+			>
 				Clear
 			</Button>
-			<Dialog open={isDialogOpen} onClose={dialogCloseHandler}>
+			<Dialog
+				open={isClearDialogOpen}
+				onClose={() => setIsClearDialogOpen(false)}
+			>
 				<DialogTitle>Warning</DialogTitle>
 				<DialogContent>
 					<DialogContentText>
@@ -86,7 +90,9 @@ const Settings = () => {
 				</DialogContent>
 				<DialogActions>
 					<Button onClick={clearHandler}>Yes</Button>
-					<Button onClick={dialogCloseHandler}>No</Button>
+					<Button onClick={() => setIsClearDialogOpen(false)}>
+						No
+					</Button>
 				</DialogActions>
 			</Dialog>
 			<Button
@@ -99,6 +105,20 @@ const Settings = () => {
 			<Button variant="contained" onClick={importBtnClickHandler}>
 				Import
 			</Button>
+			<Dialog
+				open={isImportDialogOpen}
+				onClose={() => setIsImportDialogOpen(false)}
+			>
+				<DialogTitle>Error</DialogTitle>
+				<DialogContent>
+					<DialogContentText>Corrupted data found.</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={() => setIsImportDialogOpen(false)}>
+						Ok
+					</Button>
+				</DialogActions>
+			</Dialog>
 		</Box>
 	);
 };
