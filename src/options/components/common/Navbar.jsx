@@ -1,17 +1,24 @@
 import {
+	Box,
 	Drawer,
 	IconButton,
 	List,
 	ListItem,
 	ListItemButton,
+	ListItemIcon,
 	ListItemText,
 	Paper,
+	Tooltip,
 	Typography,
 } from "@mui/material";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { Link as BrowserLink, useHistory } from "react-router-dom";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { grey } from "@mui/material/colors";
+import SettingsIcon from "@mui/icons-material/Settings";
+import HistoryIcon from "@mui/icons-material/History";
+import StarIcon from "@mui/icons-material/Star";
+import LaptopIcon from "@mui/icons-material/Laptop";
 
 const drawerStrings = ["History", "Favourites", "Sessions", "Settings"];
 const drawerUrls = ["/", "/favourites", "/sessions", "/settings"];
@@ -34,6 +41,35 @@ const Navbar = () => {
 		});
 	};
 
+	const settingsBtnClickHandler = () => {
+		setDrawerIdx(3);
+		history.push("/settings");
+	};
+
+	const outerListRef = useRef();
+	const arrowBtnRef = useRef();
+
+	const [innerListHeight, setInnerListHeight] = useState(null);
+
+	useEffect(() => {
+		let paddingY = getComputedStyle(outerListRef.current).getPropertyValue(
+			"padding-top"
+		);
+		paddingY = paddingY.slice(0, -2);
+		paddingY = parseInt(paddingY);
+
+		const btnHeight = arrowBtnRef.current.clientHeight;
+
+		setInnerListHeight(window.innerHeight - 2 * paddingY - btnHeight);
+	});
+
+	const icons = [
+		<HistoryIcon />,
+		<StarIcon />,
+		<LaptopIcon />,
+		<SettingsIcon />,
+	];
+
 	return (
 		<Drawer variant="permanent">
 			<Paper sx={{ height: "100vh" }}>
@@ -44,22 +80,26 @@ const Navbar = () => {
 						height: "100%",
 						overflow: "hidden",
 					}}
+					ref={outerListRef}
 				>
 					<ListItem
 						sx={{ display: "flex", justifyContent: "flex-end" }}
+						ref={arrowBtnRef}
 					>
-						<IconButton
-							onClick={() => setIsDrawerOpen((prev) => !prev)}
-							sx={{
-								transform: `rotate(${
-									isDrawerOpen ? 0 : 180
-								}deg)`,
-								transition:
-									"transform 300ms, background-color 300ms",
-							}}
-						>
-							<NavigateBeforeIcon />
-						</IconButton>
+						<Tooltip title={isDrawerOpen ? "Collapse" : "Expand"}>
+							<IconButton
+								onClick={() => setIsDrawerOpen((prev) => !prev)}
+								sx={{
+									transform: `rotate(${
+										isDrawerOpen ? 0 : 180
+									}deg)`,
+									transition:
+										"transform 300ms, background-color 300ms",
+								}}
+							>
+								<NavigateBeforeIcon />
+							</IconButton>
+						</Tooltip>
 					</ListItem>
 					{isDrawerOpen && (
 						<Fragment>
@@ -73,11 +113,16 @@ const Navbar = () => {
 								>
 									<ListItemText
 										sx={{
-											justifyContent: "center",
-											display: "flex",
+											"& > .MuiTypography-root": {
+												display: "flex",
+												justifyContent: "center",
+											},
 										}}
 									>
-										{str}
+										{icons[idx]}
+										<Typography sx={{ marginLeft: 1 }}>
+											{str}
+										</Typography>
 									</ListItemText>
 								</ListItemButton>
 							))}
@@ -95,37 +140,70 @@ const Navbar = () => {
 							}
 
 							return (
-								<List
+								<Box
 									sx={{
-										"&": {
-											height: "100%",
-											display: "flex",
-											flexDirection: "column",
-											justifyContent: "center",
-											cursor: "pointer",
-											transition:
-												"background-color 300ms",
-										},
-										"&:hover": {
-											backgroundColor: grey[900],
-										},
+										height: innerListHeight
+											? `${innerListHeight}px`
+											: "100%",
+										display: "flex",
+										flexDirection: "column",
+										justifyContent: "space-between",
 									}}
-									onClick={collapsedIndicatorClickHandler}
 								>
-									{arr.map((char, idx) => (
-										<ListItem
-											key={idx}
-											sx={{
+									<Box
+										sx={{
+											"&": {
+												height: "100%",
 												display: "flex",
+												flexDirection: "column",
 												justifyContent: "center",
+												cursor: "pointer",
+												transition:
+													"background-color 300ms",
+											},
+											"&:hover": {
+												backgroundColor: grey[900],
+											},
+										}}
+										onClick={collapsedIndicatorClickHandler}
+									>
+										<List
+											sx={{
+												"&": {
+													display: "flex",
+													flexDirection: "column",
+													justifyContent: "center",
+												},
 											}}
 										>
-											<Typography variant="h5">
-												{char.toUpperCase()}
-											</Typography>
-										</ListItem>
-									))}
-								</List>
+											{arr.map((char, idx) => (
+												<ListItem
+													key={idx}
+													sx={{
+														display: "flex",
+														justifyContent:
+															"center",
+													}}
+												>
+													<Typography variant="h5">
+														{char.toUpperCase()}
+													</Typography>
+												</ListItem>
+											))}
+										</List>
+									</Box>
+									<ListItem>
+										<Tooltip title="Settings">
+											<IconButton
+												onClick={
+													settingsBtnClickHandler
+												}
+											>
+												<SettingsIcon />
+											</IconButton>
+										</Tooltip>
+									</ListItem>
+								</Box>
 							);
 						})()}
 				</List>
