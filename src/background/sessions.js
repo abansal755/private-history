@@ -43,20 +43,3 @@ chrome.tabs.onRemoved.addListener(async (tabId, removeInfo) => {
 		delete newSessions[removeInfo.windowId][tabId];
 	await chrome.storage.local.set({ sessions: newSessions });
 });
-
-chrome.runtime.onStartup.addListener(async () => {
-	const { sessions = {} } = await chrome.storage.local.get("sessions");
-	const newSessions = { ...sessions };
-	for (const id in newSessions) {
-		let timestamp = newSessions[id].timestamp;
-		if (!timestamp) continue;
-		timestamp = new Date(timestamp).getTime();
-		const currentTimestamp = new Date().getTime();
-		if (
-			currentTimestamp - timestamp >=
-			1 * 7 * 24 * 60 * 60 * 1000 /*1 week*/
-		)
-			delete newSessions[id];
-	}
-	await chrome.storage.local.set({ sessions: newSessions });
-});
