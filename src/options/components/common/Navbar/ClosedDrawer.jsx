@@ -9,6 +9,9 @@ import {
 import { grey } from "@mui/material/colors";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { useHistory } from "react-router-dom";
+import { useEffect, useState } from "react";
+
+const transitionDuration = 400;
 
 const ClosedDrawer = ({
 	drawerStrings,
@@ -19,22 +22,32 @@ const ClosedDrawer = ({
 }) => {
 	const history = useHistory();
 
+	const [isTextHidden, setIsTextHidden] = useState(false);
+
 	const arr = [];
 	for (let idx = 0; idx < drawerStrings[drawerIdx].length; idx++) {
 		arr.push(drawerStrings[drawerIdx][idx]);
 	}
 
 	const collapsedIndicatorClickHandler = () => {
-		setDrawerIdx((prev) => {
-			const next = (prev + 1) % drawerStrings.length;
-			history.push(drawerUrls[next]);
-			return next;
-		});
+		setIsTextHidden(true);
+		setTimeout(() => {
+			setDrawerIdx((prev) => {
+				const next = (prev + 1) % drawerStrings.length;
+				history.push(drawerUrls[next]);
+				return next;
+			});
+			setIsTextHidden(false);
+		}, transitionDuration / 2);
 	};
 
 	const settingsBtnClickHandler = () => {
-		setDrawerIdx(3);
-		history.push("/settings");
+		setIsTextHidden(true);
+		setTimeout(() => {
+			setDrawerIdx(3);
+			history.push("/settings");
+			setIsTextHidden(false);
+		}, transitionDuration / 2);
 	};
 
 	return (
@@ -68,6 +81,11 @@ const ClosedDrawer = ({
 							display: "flex",
 							flexDirection: "column",
 							justifyContent: "center",
+							opacity: `${isTextHidden ? 0 : 100}%`,
+							transform: `scale(${isTextHidden ? 1.5 : 1})`,
+							transition: `opacity ${
+								transitionDuration / 2
+							}ms, transform ${transitionDuration / 2}ms`,
 						},
 					}}
 				>
