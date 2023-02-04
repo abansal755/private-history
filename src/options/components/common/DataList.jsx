@@ -3,22 +3,36 @@ import {
 	Box,
 	Button,
 	Divider,
+	FormControl,
+	InputLabel,
 	List,
 	ListItem,
 	ListItemText,
+	MenuItem,
 	Paper,
+	Select,
 	TextField,
 	Typography,
 } from "@mui/material";
+import SouthIcon from "@mui/icons-material/South";
+import NorthIcon from "@mui/icons-material/North";
 
 const pageSize = 50;
 
 const DataList = ({ list, DataListItem }) => {
 	const [cursor, setCursor] = useState(pageSize);
 	const [searchText, setSearchText] = useState("");
+	const [sortBy, setSortBy] = useState("timeDesc");
+	/*
+	sortBy values:
+	timeAsc
+	timeDesc
+	domainAsc
+	domainDesc
+	* */
 
 	// Search
-	let filteredList = list;
+	let filteredList = [...list];
 	if (searchText.length > 0) {
 		filteredList = [];
 		list.forEach((item) => {
@@ -46,6 +60,30 @@ const DataList = ({ list, DataListItem }) => {
 		});
 	}
 
+	// Sort
+	const sortByDomainName = (desc = true) => {
+		const hostsMap = {};
+		for (const item of filteredList) {
+			const host = new URL(item.url).host;
+			if (!hostsMap[host]) hostsMap[host] = [item];
+			else hostsMap[host].push(item);
+		}
+		const hosts = [];
+		for (const host in hostsMap) hosts.push(hostsMap[host]);
+		hosts.sort((a, b) => {
+			if (desc) return b.length - a.length;
+			else return a.length - b.length;
+		});
+		let newFilteredList = [];
+		for (const arr of hosts) {
+			for (const item of arr) newFilteredList.push(item);
+		}
+		filteredList = newFilteredList;
+	};
+	if (sortBy === "timeAsc") filteredList.reverse();
+	else if (sortBy === "domainDesc") sortByDomainName();
+	else if (sortBy === "domainAsc") sortByDomainName(false);
+
 	return (
 		<Fragment>
 			<Box display="flex" sx={{ marginTop: 3 }}>
@@ -66,10 +104,73 @@ const DataList = ({ list, DataListItem }) => {
 			</Box>
 			<Paper elevation={6} sx={{ marginY: 2, padding: 2 }}>
 				{filteredList.length > 0 && (
-					<Typography textAlign="center">
-						Showing {Math.min(filteredList.length, cursor)} results
-						out of {filteredList.length}
-					</Typography>
+					<Box
+						sx={{
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+						}}
+					>
+						<Typography textAlign="center">
+							Showing {Math.min(filteredList.length, cursor)}{" "}
+							results out of {filteredList.length}
+						</Typography>
+						<FormControl
+							sx={{
+								marginLeft: 2,
+								minWidth: 100,
+							}}
+							size="small"
+						>
+							<InputLabel>Sort By</InputLabel>
+							<Select
+								label="Sort By"
+								value={sortBy}
+								onChange={(e) => setSortBy(e.target.value)}
+							>
+								<MenuItem value="timeAsc">
+									<Box
+										sx={{
+											display: "flex",
+											alignItems: "center",
+										}}
+									>
+										Timestamp <NorthIcon />
+									</Box>
+								</MenuItem>
+								<MenuItem value="timeDesc">
+									<Box
+										sx={{
+											display: "flex",
+											alignItems: "center",
+										}}
+									>
+										Timestamp <SouthIcon />
+									</Box>
+								</MenuItem>
+								<MenuItem value="domainAsc">
+									<Box
+										sx={{
+											display: "flex",
+											alignItems: "center",
+										}}
+									>
+										Domain Name <NorthIcon />
+									</Box>
+								</MenuItem>
+								<MenuItem value="domainDesc">
+									<Box
+										sx={{
+											display: "flex",
+											alignItems: "center",
+										}}
+									>
+										Domain Name <SouthIcon />
+									</Box>
+								</MenuItem>
+							</Select>
+						</FormControl>
+					</Box>
 				)}
 				<List>
 					{filteredList.slice(0, cursor).map((item, idx) => {

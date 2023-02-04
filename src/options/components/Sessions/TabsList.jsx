@@ -42,7 +42,7 @@ const TabsList = ({ session }) => {
 					<ListItemText
 						primary={tab.title}
 						secondary={tab.url}
-						sx={{ marginX: 2 }}
+						sx={{ marginX: 2, overflow: "hidden" }}
 					/>
 				</ListItem>
 			))}
