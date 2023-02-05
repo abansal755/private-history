@@ -7,6 +7,7 @@ import App from "./App";
 import { MemoryRouter } from "react-router-dom";
 import { SnackbarProvider } from "notistack";
 import SnackbarActions from "./components/common/SnackbarActions";
+import { drawerUrls } from "./ config";
 
 const darkTheme = createTheme({
 	palette: {
@@ -28,12 +29,7 @@ root.render(
 			<QueryClientProvider client={queryClient}>
 				<MemoryRouter
 					basename="/options.html"
-					initialEntries={[
-						"/",
-						"/favourites",
-						"/sessions",
-						"/settings",
-					]}
+					initialEntries={drawerUrls}
 					initialIndex={0}
 				>
 					<ReactQueryDevtools initialIsOpen={false} />

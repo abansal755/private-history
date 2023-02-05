@@ -10,6 +10,7 @@ import LoadingFallback from "./components/common/LoadingFallback";
 const Sessions = lazy(() => import("./components/Sessions"));
 const Settings = lazy(() => import("./components/Settings"));
 import icon from "../../public/assets/icon-128.png";
+const About = lazy(() => import("./components/About"));
 
 const App = () => {
 	const queryClient = useQueryClient();
@@ -52,6 +53,11 @@ const App = () => {
 					<Route path="/settings">
 						<Suspense fallback={<LoadingFallback />}>
 							<Settings />
+						</Suspense>
+					</Route>
+					<Route path="/about">
+						<Suspense fallback={<LoadingFallback />}>
+							<About />
 						</Suspense>
 					</Route>
 				</Switch>

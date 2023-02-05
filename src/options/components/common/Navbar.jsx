@@ -12,9 +12,7 @@ import { useEffect, useRef, useState } from "react";
 import useWindowDimensions from "../../hooks/useWindowDimensions";
 import OpenDrawer from "./Navbar/OpenDrawer";
 import ClosedDrawer from "./Navbar/ClosedDrawer";
-
-const drawerStrings = ["History", "Favourites", "Sessions", "Settings"];
-const drawerUrls = ["/", "/favourites", "/sessions", "/settings"];
+import { drawerStrings, drawerUrls } from "../../ config";
 
 const Navbar = () => {
 	const history = useHistory();
@@ -75,16 +73,12 @@ const Navbar = () => {
 					</ListItem>
 					{isDrawerOpen && (
 						<OpenDrawer
-							drawerStrings={drawerStrings}
-							drawerUrls={drawerUrls}
 							drawerIdx={drawerIdx}
 							setDrawerIdx={setDrawerIdx}
 						/>
 					)}
 					{!isDrawerOpen && (
 						<ClosedDrawer
-							drawerStrings={drawerStrings}
-							drawerUrls={drawerUrls}
 							drawerIdx={drawerIdx}
 							setDrawerIdx={setDrawerIdx}
 							innerListHeight={innerListHeight}

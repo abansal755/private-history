@@ -9,17 +9,12 @@ import {
 import { grey } from "@mui/material/colors";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { useHistory } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { drawerStrings, drawerUrls } from "../../../ config";
 
 const transitionDuration = 400;
 
-const ClosedDrawer = ({
-	drawerStrings,
-	drawerUrls,
-	drawerIdx,
-	setDrawerIdx,
-	innerListHeight,
-}) => {
+const ClosedDrawer = ({ drawerIdx, setDrawerIdx, innerListHeight }) => {
 	const history = useHistory();
 
 	const [isTextHidden, setIsTextHidden] = useState(false);

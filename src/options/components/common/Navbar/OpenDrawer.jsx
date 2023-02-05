@@ -5,13 +5,16 @@ import HistoryIcon from "@mui/icons-material/History";
 import StarIcon from "@mui/icons-material/Star";
 import LaptopIcon from "@mui/icons-material/Laptop";
 import SettingsIcon from "@mui/icons-material/Settings";
+import InfoIcon from "@mui/icons-material/Info";
+import { drawerStrings, drawerUrls } from "../../../ config";
 
-const OpenDrawer = ({ drawerStrings, drawerUrls, drawerIdx, setDrawerIdx }) => {
+const OpenDrawer = ({ drawerIdx, setDrawerIdx }) => {
 	const icons = [
 		<HistoryIcon />,
 		<StarIcon />,
 		<LaptopIcon />,
 		<SettingsIcon />,
+		<InfoIcon />,
 	];
 	return (
 		<Fragment>
