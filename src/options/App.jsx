@@ -1,11 +1,10 @@
 import History from "./components/History";
 import { Route, Switch } from "react-router-dom";
-import { Fragment, useEffect, lazy, Suspense } from "react";
+import { Fragment, lazy, Suspense } from "react";
 import { Box, Container, Typography } from "@mui/material";
 const Favourites = lazy(() => import("./components/Favourites"));
 import Navbar from "./components/common/Navbar";
 import { useQueryClient } from "react-query";
-import { fetch as fetchFavourites } from "./services/Favourites";
 import LoadingFallback from "./components/common/LoadingFallback";
 const Sessions = lazy(() => import("./components/Sessions"));
 const Settings = lazy(() => import("./components/Settings"));
@@ -14,10 +13,6 @@ const About = lazy(() => import("./components/About"));
 
 const App = () => {
 	const queryClient = useQueryClient();
-
-	useEffect(() => {
-		queryClient.prefetchQuery("favourites", fetchFavourites);
-	}, []);
 
 	return (
 		<Fragment>

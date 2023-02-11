@@ -1,25 +1,38 @@
-import { useQuery } from "react-query";
-import DataList from "./common/DataList";
+import { useInfiniteQuery } from "react-query";
 import PrivateAccessDialog from "./History/PrivateAccessDialog";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
+import DataList from "./common/DataList";
 import HistoryListItem from "./History/HistoryListItem";
-import { fetch as fetchHistory } from "../services/History";
-import LoadingFallback from "./common/LoadingFallback";
 
 const History = () => {
-	const {
-		data: history,
-		isLoading,
-		isSuccess,
-	} = useQuery("history", fetchHistory);
+	const queryFn = (searchText) => {
+		return async ({ pageParam = 0 }) => {
+			const page = await chrome.runtime.sendMessage({
+				type: "history",
+				method: "getFilteredPage",
+				args: [searchText, pageParam],
+			});
+			return page;
+		};
+	};
+
+	const createFilter = async (e) => {
+		await chrome.runtime.sendMessage({
+			type: "history",
+			method: "createFilter",
+			args: [e.target.value],
+		});
+	};
 
 	return (
 		<Fragment>
 			<PrivateAccessDialog />
-			{isLoading && <LoadingFallback />}
-			{isSuccess && (
-				<DataList list={history} DataListItem={HistoryListItem} />
-			)}
+			<DataList
+				DataListItem={HistoryListItem}
+				queryKey="history"
+				queryFn={queryFn}
+				createFilter={createFilter}
+			/>
 		</Fragment>
 	);
 };
