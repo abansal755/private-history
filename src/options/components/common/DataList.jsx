@@ -14,12 +14,13 @@ import SortBySelect from "./DataList/SortBySelect";
 
 const DataList = ({ DataListItem, queryKey, queryFn, createFilter }) => {
 	const [searchText, setSearchText] = useState("");
+	const [lastSearchText, setLastSearchText] = useState("");
 	const [visibleLength, setVisibleLength] = useState(0);
 	const [sortBy, setSortBy] = useState("desc");
 
 	const query = useInfiniteQuery({
-		queryKey: [queryKey, searchText],
-		queryFn: queryFn(searchText, sortBy === "desc"),
+		queryKey: [queryKey],
+		queryFn: queryFn(lastSearchText, sortBy === "desc"),
 		getNextPageParam: ({ page, total }) => {
 			if (page < total - 1) return page + 1;
 		},
@@ -35,18 +36,22 @@ const DataList = ({ DataListItem, queryKey, queryFn, createFilter }) => {
 	} = query;
 
 	const lengthQuery = useQuery({
-		queryKey: `${queryKey}_${searchText}_length`,
+		queryKey: `${queryKey}_length`,
 		queryFn: async () => {
 			const length = await chrome.runtime.sendMessage({
 				type: queryKey,
 				method: "getFilteredLength",
-				args: [searchText],
+				args: [lastSearchText],
 			});
 			return length;
 		},
 	});
 
-	const { data: length, isSuccess: isLengthAvailable } = lengthQuery;
+	const {
+		data: length,
+		isSuccess: isLengthAvailable,
+		refetch: refetchLength,
+	} = lengthQuery;
 
 	useEffect(() => {
 		if (!data) return;
@@ -63,10 +68,16 @@ const DataList = ({ DataListItem, queryKey, queryFn, createFilter }) => {
 		})();
 	}, [sortBy]);
 
-	const searchTextInputHandler = async (e) => {
-		setSearchText(e.target.value);
-		await createFilter(e.target.value);
-	};
+	useEffect(() => {
+		const id = setTimeout(async () => {
+			setLastSearchText(searchText);
+			await createFilter(searchText);
+			await refetch();
+			await refetchLength();
+		}, 500);
+
+		return () => clearTimeout(id);
+	}, [searchText]);
 
 	return (
 		<Fragment>
@@ -76,7 +87,7 @@ const DataList = ({ DataListItem, queryKey, queryFn, createFilter }) => {
 					fullWidth
 					label="Search"
 					value={searchText}
-					onInput={searchTextInputHandler}
+					onInput={(e) => setSearchText(e.target.value)}
 				/>
 				<Button
 					variant="contained"
@@ -109,9 +120,9 @@ const DataList = ({ DataListItem, queryKey, queryFn, createFilter }) => {
 								<DataListItem
 									key={item.id}
 									item={item}
-									searchText={searchText}
-									query={query}
-									lengthQuery={lengthQuery}
+									searchText={lastSearchText}
+									refetch={refetch}
+									refetchLength={refetchLength}
 								/>
 							));
 						})}

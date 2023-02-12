@@ -13,6 +13,7 @@ import PublicIcon from "@mui/icons-material/Public";
 import SearchText from "../common/SearchText";
 import { useMutation } from "react-query";
 import { useSnackbar } from "notistack";
+import { memo } from "react";
 
 const HistoryListItem = ({ item, searchText }) => {
 	const { enqueueSnackbar } = useSnackbar();
@@ -112,4 +113,4 @@ const HistoryListItem = ({ item, searchText }) => {
 	);
 };
 
-export default HistoryListItem;
+export default memo(HistoryListItem);

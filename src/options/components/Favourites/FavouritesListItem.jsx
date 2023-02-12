@@ -13,12 +13,10 @@ import PublicIcon from "@mui/icons-material/Public";
 import SearchText from "../common/SearchText";
 import { useMutation } from "react-query";
 import { useSnackbar } from "notistack";
+import { memo } from "react";
 
-const FavouritesListItem = ({ item, searchText, query, lengthQuery }) => {
+const FavouritesListItem = ({ item, searchText, refetch, refetchLength }) => {
 	const { enqueueSnackbar } = useSnackbar();
-
-	const { refetch } = query;
-	const { refetch: refetchLength } = lengthQuery;
 
 	const timestamp = new Date(item.timestamp);
 
@@ -117,4 +115,4 @@ const FavouritesListItem = ({ item, searchText, query, lengthQuery }) => {
 	);
 };
 
-export default FavouritesListItem;
+export default memo(FavouritesListItem);
