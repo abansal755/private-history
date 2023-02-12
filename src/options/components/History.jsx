@@ -5,22 +5,22 @@ import DataList from "./common/DataList";
 import HistoryListItem from "./History/HistoryListItem";
 
 const History = () => {
-	const queryFn = (searchText) => {
+	const queryFn = (searchText, reverse) => {
 		return async ({ pageParam = 0 }) => {
 			const page = await chrome.runtime.sendMessage({
 				type: "history",
 				method: "getFilteredPage",
-				args: [searchText, pageParam],
+				args: [searchText, pageParam, reverse],
 			});
 			return page;
 		};
 	};
 
-	const createFilter = async (e) => {
+	const createFilter = async (searchText) => {
 		await chrome.runtime.sendMessage({
 			type: "history",
 			method: "createFilter",
-			args: [e.target.value],
+			args: [searchText],
 		});
 	};
 

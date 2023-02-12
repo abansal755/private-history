@@ -14,10 +14,11 @@ import SearchText from "../common/SearchText";
 import { useMutation } from "react-query";
 import { useSnackbar } from "notistack";
 
-const FavouritesListItem = ({ item, searchText, query }) => {
+const FavouritesListItem = ({ item, searchText, query, lengthQuery }) => {
 	const { enqueueSnackbar } = useSnackbar();
 
 	const { refetch } = query;
+	const { refetch: refetchLength } = lengthQuery;
 
 	const timestamp = new Date(item.timestamp);
 
@@ -32,6 +33,7 @@ const FavouritesListItem = ({ item, searchText, query }) => {
 		{
 			onSuccess: async () => {
 				await refetch();
+				await refetchLength();
 				enqueueSnackbar("Removed from favourites");
 			},
 		}

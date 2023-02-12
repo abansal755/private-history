@@ -10,23 +10,31 @@ import {
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useInfiniteQuery, useQuery } from "react-query";
+import SortBySelect from "./DataList/SortBySelect";
 
 const DataList = ({ DataListItem, queryKey, queryFn, createFilter }) => {
 	const [searchText, setSearchText] = useState("");
 	const [visibleLength, setVisibleLength] = useState(0);
+	const [sortBy, setSortBy] = useState("desc");
 
 	const query = useInfiniteQuery({
 		queryKey: [queryKey, searchText],
-		queryFn: queryFn(searchText),
+		queryFn: queryFn(searchText, sortBy === "desc"),
 		getNextPageParam: ({ page, total }) => {
 			if (page < total - 1) return page + 1;
 		},
 	});
 
-	const { fetchNextPage, hasNextPage, data, isSuccess, isFetchingNextPage } =
-		query;
+	const {
+		fetchNextPage,
+		hasNextPage,
+		data,
+		isSuccess,
+		isFetchingNextPage,
+		refetch,
+	} = query;
 
-	const { data: length, isSuccess: isLengthAvailable } = useQuery({
+	const lengthQuery = useQuery({
 		queryKey: `${queryKey}_${searchText}_length`,
 		queryFn: async () => {
 			const length = await chrome.runtime.sendMessage({
@@ -38,6 +46,8 @@ const DataList = ({ DataListItem, queryKey, queryFn, createFilter }) => {
 		},
 	});
 
+	const { data: length, isSuccess: isLengthAvailable } = lengthQuery;
+
 	useEffect(() => {
 		if (!data) return;
 		if (data.pages[0].error) setVisibleLength(0);
@@ -47,9 +57,15 @@ const DataList = ({ DataListItem, queryKey, queryFn, createFilter }) => {
 			);
 	}, [data]);
 
+	useEffect(() => {
+		(async () => {
+			await refetch();
+		})();
+	}, [sortBy]);
+
 	const searchTextInputHandler = async (e) => {
 		setSearchText(e.target.value);
-		await createFilter(e);
+		await createFilter(e.target.value);
 	};
 
 	return (
@@ -84,6 +100,7 @@ const DataList = ({ DataListItem, queryKey, queryFn, createFilter }) => {
 								Showing {visibleLength} results out of {length}
 							</Typography>
 						)}
+						<SortBySelect sortBy={sortBy} setSortBy={setSortBy} />
 					</Box>
 					<List>
 						{data.pages.map((page) => {
@@ -94,6 +111,7 @@ const DataList = ({ DataListItem, queryKey, queryFn, createFilter }) => {
 									item={item}
 									searchText={searchText}
 									query={query}
+									lengthQuery={lengthQuery}
 								/>
 							));
 						})}

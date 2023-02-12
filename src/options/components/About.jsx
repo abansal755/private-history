@@ -1,14 +1,4 @@
-import {
-	Accordion,
-	AccordionDetails,
-	AccordionSummary,
-	Box,
-	Button,
-	Paper,
-	Typography,
-} from "@mui/material";
-import icon from "../../../public/assets/icon-128.png";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Box, Paper, Typography } from "@mui/material";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import EmailIcon from "@mui/icons-material/Email";
 import GitHubIcon from "@mui/icons-material/GitHub";
@@ -31,8 +21,6 @@ const About = () => {
 					padding: 2,
 				}}
 			>
-				{/*<img src={icon} width={64} height={64} />*/}
-				{/*<Typography variant="h4">Private History</Typography>*/}
 				<Box
 					display="flex"
 					alignItems="baseline"

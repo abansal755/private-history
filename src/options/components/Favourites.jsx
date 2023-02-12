@@ -3,22 +3,22 @@ import DataList from "./common/DataList";
 import FavouritesListItem from "./Favourites/FavouritesListItem";
 
 const Favourites = () => {
-	const queryFn = (searchText) => {
+	const queryFn = (searchText, reverse) => {
 		return async ({ pageParam = 0 }) => {
 			const page = await chrome.runtime.sendMessage({
 				type: "favourites",
 				method: "getFilteredPage",
-				args: [searchText, pageParam],
+				args: [searchText, pageParam, reverse],
 			});
 			return page;
 		};
 	};
 
-	const createFilter = async (e) => {
+	const createFilter = async (searchText) => {
 		await chrome.runtime.sendMessage({
 			type: "favourites",
 			method: "createFilter",
-			args: [e.target.value],
+			args: [searchText],
 		});
 	};
 

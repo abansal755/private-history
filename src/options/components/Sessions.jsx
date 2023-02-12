@@ -17,10 +17,12 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useSnackbar } from "notistack";
 import FavIconGroup from "./Sessions/FavIconGroup";
 import LoadingButton from "@mui/lab/LoadingButton";
+import SortBySelect from "./common/DataList/SortBySelect";
 
 const Sessions = () => {
 	const { enqueueSnackbar } = useSnackbar();
 	const [visibleLength, setVisibleLength] = useState(0);
+	const [sortBy, setSortBy] = useState("desc");
 
 	const {
 		fetchNextPage,
@@ -35,7 +37,7 @@ const Sessions = () => {
 			const page = await chrome.runtime.sendMessage({
 				type: "sessions",
 				method: "getPage",
-				args: [pageParam],
+				args: [pageParam, sortBy === "desc"],
 			});
 			return page;
 		},
@@ -82,6 +84,12 @@ const Sessions = () => {
 			);
 	}, [data]);
 
+	useEffect(() => {
+		(async () => {
+			await refetch();
+		})();
+	}, [sortBy]);
+
 	const openInIncognitoBtnClickHandler = (session) => {
 		return (e) => {
 			e.stopPropagation();
@@ -108,12 +116,14 @@ const Sessions = () => {
 						display="flex"
 						justifyContent="center"
 						marginBottom={2}
+						alignItems="center"
 					>
 						{isLengthAvailable && (
 							<Typography>
 								Showing {visibleLength} results out of {length}
 							</Typography>
 						)}
+						<SortBySelect sortBy={sortBy} setSortBy={setSortBy} />
 					</Box>
 					{data.pages.map((page) => {
 						if (!page.data) return;
