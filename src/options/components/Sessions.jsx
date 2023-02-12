@@ -1,15 +1,12 @@
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { fetch as fetchSessions } from "../services/Sessions";
-import { Fragment, useState } from "react";
+import { useInfiniteQuery, useMutation } from "react-query";
+import { Fragment } from "react";
 import {
 	Accordion,
 	AccordionDetails,
 	AccordionSummary,
 	Box,
 	Button,
-	CircularProgress,
 	IconButton,
-	Paper,
 	Stack,
 	Tooltip,
 	Typography,
@@ -17,37 +14,47 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import TabsList from "./Sessions/TabsList";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { remove as removeSession } from "../services/Sessions";
 import { useSnackbar } from "notistack";
 import FavIconGroup from "./Sessions/FavIconGroup";
-import LoadingFallback from "./common/LoadingFallback";
-
-const pageSize = 50;
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const Sessions = () => {
-	const {
-		data: sessions,
-		isLoading,
-		isSuccess,
-	} = useQuery("sessions", fetchSessions);
-	const queryClient = useQueryClient();
 	const { enqueueSnackbar } = useSnackbar();
 
-	const [cursor, setCursor] = useState(pageSize);
-
-	const mutation = useMutation(removeSession, {
-		onMutate: ({ id, idx }) => {
-			const oldSessions = queryClient.getQueryData("sessions");
-			queryClient.setQueryData("sessions", [
-				...oldSessions.slice(0, idx),
-				...oldSessions.slice(idx + 1),
-			]);
-			return oldSessions;
-		},
-		onError: (err, { id, idx }, oldSessions) => {
-			queryClient.setQueryData("sessions", oldSessions);
+	const {
+		fetchNextPage,
+		hasNextPage,
+		data,
+		isSuccess,
+		isFetchingNextPage,
+		refetch,
+	} = useInfiniteQuery({
+		queryKey: ["sessions"],
+		queryFn: async ({ pageParam = 0 }) => {
+			const page = await chrome.runtime.sendMessage({
+				type: "sessions",
+				method: "getPage",
+				args: [pageParam],
+			});
+			return page;
 		},
 	});
+
+	const mutation = useMutation(
+		async (id) => {
+			await chrome.runtime.sendMessage({
+				type: "sessions",
+				method: "removeSession",
+				args: [id],
+			});
+		},
+		{
+			onSuccess: async () => {
+				await refetch();
+				enqueueSnackbar("Removed from sessions");
+			},
+		}
+	);
 
 	const openInIncognitoBtnClickHandler = (session) => {
 		return (e) => {
@@ -60,115 +67,93 @@ const Sessions = () => {
 		};
 	};
 
-	const deleteBtnClickHandler = (session, idx) => {
+	const deleteBtnClickHandler = (session) => {
 		return (e) => {
 			e.stopPropagation();
-			enqueueSnackbar("Removed from sessions");
-			mutation.mutate({ id: session.id, idx });
+			mutation.mutate(session.id);
 		};
 	};
 
 	return (
 		<Fragment>
-			{isLoading && <LoadingFallback />}
 			{isSuccess && (
 				<Box sx={{ marginTop: 3 }}>
-					{sessions.length === 0 && (
-						<Paper
-							elevation={6}
-							sx={{
-								marginY: 2,
-								padding: 2,
-								display: "flex",
-								justifyContent: "center",
-							}}
-						>
-							Nothing found here...
-						</Paper>
-					)}
-					{sessions.length > 0 && (
-						<Box
-							display="flex"
-							justifyContent="center"
-							marginBottom={2}
-						>
-							<Typography>
-								Showing {Math.min(cursor, sessions.length)}{" "}
-								results out of {sessions.length}
-							</Typography>
-						</Box>
-					)}
-					{sessions.slice(0, cursor).map((session, idx) => (
-						<Accordion key={session.id}>
-							<AccordionSummary expandIcon={<ExpandMoreIcon />}>
-								<Box
-									display="flex"
-									justifyContent="space-between"
-									width="100%"
-									alignItems="center"
-									marginRight={2}
+					{data.pages.map((page) => {
+						if (!page.data) return;
+						return page.data.map((session, idx) => (
+							<Accordion key={session.id}>
+								<AccordionSummary
+									expandIcon={<ExpandMoreIcon />}
 								>
-									<Box display="flex">
-										<FavIconGroup session={session} />
-										<Stack>
-											<Box>
-												<Typography
-													variant="subtitle1"
-													sx={{
-														whiteSpace: "nowrap",
-													}}
-												>
-													{new Date(
-														session.timestamp
-													).toLocaleTimeString()}
-												</Typography>
-											</Box>
-											<Box>
-												<Typography variant="subtitle2">
-													{new Date(
-														session.timestamp
-													).toLocaleDateString()}
-												</Typography>
-											</Box>
-										</Stack>
-									</Box>
-									<Box>
-										<Button
-											onClick={openInIncognitoBtnClickHandler(
-												session
-											)}
-										>
-											Open in Incognito
-										</Button>
-										<Tooltip title="Remove">
-											<IconButton
-												onClick={deleteBtnClickHandler(
-													session,
-													idx
+									<Box
+										display="flex"
+										justifyContent="space-between"
+										width="100%"
+										alignItems="center"
+										marginRight={2}
+									>
+										<Box display="flex">
+											<FavIconGroup session={session} />
+											<Stack>
+												<Box>
+													<Typography
+														variant="subtitle1"
+														sx={{
+															whiteSpace:
+																"nowrap",
+														}}
+													>
+														{new Date(
+															session.timestamp
+														).toLocaleTimeString()}
+													</Typography>
+												</Box>
+												<Box>
+													<Typography variant="subtitle2">
+														{new Date(
+															session.timestamp
+														).toLocaleDateString()}
+													</Typography>
+												</Box>
+											</Stack>
+										</Box>
+										<Box>
+											<Button
+												onClick={openInIncognitoBtnClickHandler(
+													session
 												)}
 											>
-												<DeleteIcon />
-											</IconButton>
-										</Tooltip>
+												Open in Incognito
+											</Button>
+											<Tooltip title="Remove">
+												<IconButton
+													onClick={deleteBtnClickHandler(
+														session
+													)}
+												>
+													<DeleteIcon />
+												</IconButton>
+											</Tooltip>
+										</Box>
 									</Box>
-								</Box>
-							</AccordionSummary>
-							<AccordionDetails>
-								<TabsList session={session} />
-							</AccordionDetails>
-						</Accordion>
-					))}
+								</AccordionSummary>
+								<AccordionDetails>
+									<TabsList session={session} />
+								</AccordionDetails>
+							</Accordion>
+						));
+					})}
 					<Box display="flex" justifyContent="center" marginTop={2}>
-						{sessions.length > 0 && (
-							<Button
-								onClick={() =>
-									setCursor((prev) => prev + pageSize)
-								}
-								disabled={cursor >= sessions.length}
-							>
-								Load More
-							</Button>
-						)}
+						<LoadingButton
+							disabled={!hasNextPage || isFetchingNextPage}
+							sx={{
+								marginX: "auto",
+							}}
+							onClick={fetchNextPage}
+							loading={isFetchingNextPage}
+						>
+							Load More
+						</LoadingButton>
 					</Box>
 				</Box>
 			)}
