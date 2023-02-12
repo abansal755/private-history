@@ -1,5 +1,5 @@
-import { useInfiniteQuery, useMutation } from "react-query";
-import { Fragment } from "react";
+import { useInfiniteQuery, useMutation, useQuery } from "react-query";
+import { Fragment, useEffect, useState } from "react";
 import {
 	Accordion,
 	AccordionDetails,
@@ -20,6 +20,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 
 const Sessions = () => {
 	const { enqueueSnackbar } = useSnackbar();
+	const [visibleLength, setVisibleLength] = useState(0);
 
 	const {
 		fetchNextPage,
@@ -40,6 +41,21 @@ const Sessions = () => {
 		},
 	});
 
+	const {
+		data: length,
+		isSuccess: isLengthAvailable,
+		refetch: refetchLength,
+	} = useQuery({
+		queryKey: "sessions_length",
+		queryFn: async () => {
+			const length = await chrome.runtime.sendMessage({
+				type: "sessions",
+				method: "getLength",
+			});
+			return length;
+		},
+	});
+
 	const mutation = useMutation(
 		async (id) => {
 			await chrome.runtime.sendMessage({
@@ -51,10 +67,20 @@ const Sessions = () => {
 		{
 			onSuccess: async () => {
 				await refetch();
+				await refetchLength();
 				enqueueSnackbar("Removed from sessions");
 			},
 		}
 	);
+
+	useEffect(() => {
+		if (!data) return;
+		if (data.pages[0].error) setVisibleLength(0);
+		else
+			setVisibleLength(
+				50 * (data.pages.length - 1) + data.pages.at(-1).data.length
+			);
+	}, [data]);
 
 	const openInIncognitoBtnClickHandler = (session) => {
 		return (e) => {
@@ -78,6 +104,17 @@ const Sessions = () => {
 		<Fragment>
 			{isSuccess && (
 				<Box sx={{ marginTop: 3 }}>
+					<Box
+						display="flex"
+						justifyContent="center"
+						marginBottom={2}
+					>
+						{isLengthAvailable && (
+							<Typography>
+								Showing {visibleLength} results out of {length}
+							</Typography>
+						)}
+					</Box>
 					{data.pages.map((page) => {
 						if (!page.data) return;
 						return page.data.map((session, idx) => (

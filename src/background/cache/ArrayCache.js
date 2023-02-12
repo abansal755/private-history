@@ -15,6 +15,11 @@ export default class ArrayCache extends Cache {
 		await this.setCache([...data, item]);
 	}
 
+	async getLength() {
+		const data = await this.getCache();
+		return data.length;
+	}
+
 	async getPage(page, reverse = true) {
 		const data = await this.getCache();
 		return getPageFromArray(

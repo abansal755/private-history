@@ -1,10 +1,19 @@
-import { Fragment, useState } from "react";
-import { Box, Button, List, ListItem, Paper, TextField } from "@mui/material";
+import { Fragment, useEffect, useState } from "react";
+import {
+	Box,
+	Button,
+	List,
+	ListItem,
+	Paper,
+	TextField,
+	Typography,
+} from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { useInfiniteQuery } from "react-query";
+import { useInfiniteQuery, useQuery } from "react-query";
 
 const DataList = ({ DataListItem, queryKey, queryFn, createFilter }) => {
 	const [searchText, setSearchText] = useState("");
+	const [visibleLength, setVisibleLength] = useState(0);
 
 	const query = useInfiniteQuery({
 		queryKey: [queryKey, searchText],
@@ -16,6 +25,27 @@ const DataList = ({ DataListItem, queryKey, queryFn, createFilter }) => {
 
 	const { fetchNextPage, hasNextPage, data, isSuccess, isFetchingNextPage } =
 		query;
+
+	const { data: length, isSuccess: isLengthAvailable } = useQuery({
+		queryKey: `${queryKey}_${searchText}_length`,
+		queryFn: async () => {
+			const length = await chrome.runtime.sendMessage({
+				type: queryKey,
+				method: "getFilteredLength",
+				args: [searchText],
+			});
+			return length;
+		},
+	});
+
+	useEffect(() => {
+		if (!data) return;
+		if (data.pages[0].error) setVisibleLength(0);
+		else
+			setVisibleLength(
+				50 * (data.pages.length - 1) + data.pages.at(-1).data.length
+			);
+	}, [data]);
 
 	const searchTextInputHandler = async (e) => {
 		setSearchText(e.target.value);
@@ -42,6 +72,19 @@ const DataList = ({ DataListItem, queryKey, queryFn, createFilter }) => {
 			</Box>
 			{isSuccess && (
 				<Paper elevation={6} sx={{ marginY: 2, padding: 2 }}>
+					<Box
+						sx={{
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+						}}
+					>
+						{isLengthAvailable && (
+							<Typography textAlign="center">
+								Showing {visibleLength} results out of {length}
+							</Typography>
+						)}
+					</Box>
 					<List>
 						{data.pages.map((page) => {
 							if (!page.data) return;

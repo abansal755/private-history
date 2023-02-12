@@ -40,4 +40,9 @@ export default class ObjectCache extends Cache {
 			reverse
 		);
 	}
+
+	async getLength() {
+		await this._hydrateArr();
+		return this._arr.length;
+	}
 }

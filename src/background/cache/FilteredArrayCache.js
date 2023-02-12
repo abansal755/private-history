@@ -34,4 +34,14 @@ export default class FilteredArrayCache extends ArrayCache {
 			reverse
 		);
 	}
+
+	async getFilteredLength(searchText) {
+		if (searchText === "") {
+			const length = await this.getLength();
+			return length;
+		}
+		const data = this._filters[searchText];
+		if (data === undefined) throw new Error("Filter not created");
+		return data.length;
+	}
 }
