@@ -13,6 +13,7 @@ import CustomDialog from "./Settings/CustomDialog";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import UploadIcon from "@mui/icons-material/Upload";
+import { grey } from "@mui/material/colors";
 
 const Settings = () => {
 	const { enqueueSnackbar } = useSnackbar();
@@ -78,7 +79,7 @@ const Settings = () => {
 	};
 
 	return (
-		<Paper sx={{ marginTop: 3 }}>
+		<Paper sx={{ marginTop: 3, backgroundColor: grey[900] }} elevation={2}>
 			<List>
 				<ListItem disablePadding>
 					<ListItemButton onClick={() => setIsClearDialogOpen(true)}>

@@ -65,7 +65,7 @@ const ClosedDrawer = ({ drawerIdx, setDrawerIdx, innerListHeight }) => {
 						transition: "background-color 300ms",
 					},
 					"&:hover": {
-						backgroundColor: grey[900],
+						backgroundColor: grey[800],
 					},
 				}}
 				onClick={collapsedIndicatorClickHandler}

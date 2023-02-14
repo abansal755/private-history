@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import {
 	Box,
 	Button,
@@ -11,11 +11,12 @@ import {
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useInfiniteQuery, useQuery } from "react-query";
 import SortBySelect from "./DataList/SortBySelect";
+import { grey } from "@mui/material/colors";
+import useVisibleLength from "../../hooks/useVisibleLength";
 
 const DataList = ({ DataListItem, queryKey, queryFn, createFilter }) => {
 	const [searchText, setSearchText] = useState("");
 	const [lastSearchText, setLastSearchText] = useState("");
-	const [visibleLength, setVisibleLength] = useState(0);
 	const [sortBy, setSortBy] = useState("desc");
 
 	const query = useInfiniteQuery({
@@ -53,19 +54,10 @@ const DataList = ({ DataListItem, queryKey, queryFn, createFilter }) => {
 		refetch: refetchLength,
 	} = lengthQuery;
 
-	useEffect(() => {
-		if (!data) return;
-		if (data.pages[0].error) setVisibleLength(0);
-		else
-			setVisibleLength(
-				50 * (data.pages.length - 1) + data.pages.at(-1).data.length
-			);
-	}, [data]);
+	const visibleLength = useVisibleLength(data);
 
 	useEffect(() => {
-		(async () => {
-			await refetch();
-		})();
+		refetch();
 	}, [sortBy]);
 
 	useEffect(() => {
@@ -98,7 +90,10 @@ const DataList = ({ DataListItem, queryKey, queryFn, createFilter }) => {
 				</Button>
 			</Box>
 			{isSuccess && (
-				<Paper elevation={6} sx={{ marginY: 2, padding: 2 }}>
+				<Paper
+					sx={{ marginY: 2, padding: 2, backgroundColor: grey[900] }}
+					elevation={2}
+				>
 					<Box
 						sx={{
 							display: "flex",

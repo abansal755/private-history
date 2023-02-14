@@ -13,6 +13,7 @@ import useWindowDimensions from "../../hooks/useWindowDimensions";
 import OpenDrawer from "./Navbar/OpenDrawer";
 import ClosedDrawer from "./Navbar/ClosedDrawer";
 import { drawerStrings, drawerUrls } from "../../ config";
+import { grey } from "@mui/material/colors";
 
 const Navbar = () => {
 	const history = useHistory();
@@ -42,7 +43,7 @@ const Navbar = () => {
 
 	return (
 		<Drawer variant="permanent">
-			<Paper sx={{ height: "100vh" }}>
+			<Paper sx={{ height: "100vh", backgroundColor: grey[900] }}>
 				<List
 					sx={{
 						width: isDrawerOpen ? "250px" : "72px",

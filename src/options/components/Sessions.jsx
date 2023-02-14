@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useMutation, useQuery } from "react-query";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import {
 	Accordion,
 	AccordionDetails,
@@ -18,10 +18,11 @@ import { useSnackbar } from "notistack";
 import FavIconGroup from "./Sessions/FavIconGroup";
 import LoadingButton from "@mui/lab/LoadingButton";
 import SortBySelect from "./common/DataList/SortBySelect";
+import { grey } from "@mui/material/colors";
+import useVisibleLength from "../hooks/useVisibleLength";
 
 const Sessions = () => {
 	const { enqueueSnackbar } = useSnackbar();
-	const [visibleLength, setVisibleLength] = useState(0);
 	const [sortBy, setSortBy] = useState("desc");
 
 	const {
@@ -75,19 +76,10 @@ const Sessions = () => {
 		}
 	);
 
-	useEffect(() => {
-		if (!data) return;
-		if (data.pages[0].error) setVisibleLength(0);
-		else
-			setVisibleLength(
-				50 * (data.pages.length - 1) + data.pages.at(-1).data.length
-			);
-	}, [data]);
+	const visibleLength = useVisibleLength(data);
 
 	useEffect(() => {
-		(async () => {
-			await refetch();
-		})();
+		refetch();
 	}, [sortBy]);
 
 	const openInIncognitoBtnClickHandler = (session) => {
@@ -128,7 +120,10 @@ const Sessions = () => {
 					{data.pages.map((page) => {
 						if (!page.data) return;
 						return page.data.map((session, idx) => (
-							<Accordion key={session.id}>
+							<Accordion
+								key={session.id}
+								sx={{ backgroundColor: grey[900] }}
+							>
 								<AccordionSummary
 									expandIcon={<ExpandMoreIcon />}
 								>

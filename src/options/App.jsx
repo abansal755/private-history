@@ -1,18 +1,20 @@
 import History from "./components/History";
 import { Route, Switch } from "react-router-dom";
-import { Fragment, lazy, Suspense } from "react";
+import { Fragment, lazy, Suspense, useEffect } from "react";
 import { Box, Container, Typography } from "@mui/material";
 const Favourites = lazy(() => import("./components/Favourites"));
 import Navbar from "./components/common/Navbar";
-import { useQueryClient } from "react-query";
 import LoadingFallback from "./components/common/LoadingFallback";
 const Sessions = lazy(() => import("./components/Sessions"));
 const Settings = lazy(() => import("./components/Settings"));
 import icon from "../../public/assets/icon-128.png";
+import { grey } from "@mui/material/colors";
 const About = lazy(() => import("./components/About"));
 
 const App = () => {
-	const queryClient = useQueryClient();
+	useEffect(() => {
+		document.body.style.backgroundColor = grey[900];
+	}, []);
 
 	return (
 		<Fragment>

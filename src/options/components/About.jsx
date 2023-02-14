@@ -4,6 +4,7 @@ import EmailIcon from "@mui/icons-material/Email";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import ActionButton from "./About/ActionButton";
 import { useSnackbar } from "notistack";
+import { grey } from "@mui/material/colors";
 
 const About = () => {
 	const { enqueueSnackbar } = useSnackbar();
@@ -19,7 +20,9 @@ const About = () => {
 				sx={{
 					marginTop: 3,
 					padding: 2,
+					backgroundColor: grey[900],
 				}}
+				elevation={2}
 			>
 				<Box
 					display="flex"

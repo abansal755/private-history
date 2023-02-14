@@ -50,6 +50,7 @@ export default class Sessions extends ObjectCache {
 			if (session) {
 				const newSession = { ...session };
 				delete newSession[tabId];
+				newSessions[removeInfo.windowId] = newSession;
 			}
 			await this.setCache(newSessions);
 		});
