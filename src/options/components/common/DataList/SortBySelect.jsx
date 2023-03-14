@@ -2,7 +2,7 @@ import { Box, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import NorthIcon from "@mui/icons-material/North";
 import SouthIcon from "@mui/icons-material/South";
 
-const SortBySelect = ({ sortBy, setSortBy }) => {
+const SortBySelect = ({ sortBy, onChange }) => {
 	return (
 		<FormControl
 			sx={{
@@ -12,11 +12,7 @@ const SortBySelect = ({ sortBy, setSortBy }) => {
 			size="small"
 		>
 			<InputLabel>Sort By</InputLabel>
-			<Select
-				label="Sort By"
-				value={sortBy}
-				onChange={(e) => setSortBy(e.target.value)}
-			>
+			<Select label="Sort By" value={sortBy} onChange={onChange}>
 				<MenuItem value="asc">
 					<Box
 						sx={{

@@ -13,15 +13,16 @@ import { useInfiniteQuery, useQuery } from "react-query";
 import SortBySelect from "./DataList/SortBySelect";
 import { grey } from "@mui/material/colors";
 import useVisibleLength from "../../hooks/useVisibleLength";
+import useDebounce from "../../hooks/useDebounce";
 
-const DataList = ({ DataListItem, queryKey, queryFn, createFilter }) => {
+const DataList = ({ DataListItem, queryKey, queryFunctor, createFilter }) => {
 	const [searchText, setSearchText] = useState("");
-	const [lastSearchText, setLastSearchText] = useState("");
+	const searchTextDebounced = useDebounce(searchText, 500);
 	const [sortBy, setSortBy] = useState("desc");
 
 	const query = useInfiniteQuery({
 		queryKey: [queryKey],
-		queryFn: queryFn(lastSearchText, sortBy === "desc"),
+		queryFn: queryFunctor(searchTextDebounced, sortBy === "desc"),
 		getNextPageParam: ({ page, total }) => {
 			if (page < total - 1) return page + 1;
 		},
@@ -42,7 +43,7 @@ const DataList = ({ DataListItem, queryKey, queryFn, createFilter }) => {
 			const length = await chrome.runtime.sendMessage({
 				type: queryKey,
 				method: "getFilteredLength",
-				args: [lastSearchText],
+				args: [searchTextDebounced],
 			});
 			return length;
 		},
@@ -61,15 +62,12 @@ const DataList = ({ DataListItem, queryKey, queryFn, createFilter }) => {
 	}, [sortBy]);
 
 	useEffect(() => {
-		const id = setTimeout(async () => {
-			setLastSearchText(searchText);
-			await createFilter(searchText);
+		(async () => {
+			await createFilter(searchTextDebounced);
 			await refetch();
 			await refetchLength();
-		}, 500);
-
-		return () => clearTimeout(id);
-	}, [searchText]);
+		})();
+	}, [searchTextDebounced]);
 
 	return (
 		<Fragment>
@@ -106,7 +104,10 @@ const DataList = ({ DataListItem, queryKey, queryFn, createFilter }) => {
 								Showing {visibleLength} results out of {length}
 							</Typography>
 						)}
-						<SortBySelect sortBy={sortBy} setSortBy={setSortBy} />
+						<SortBySelect
+							sortBy={sortBy}
+							onChange={(e) => setSortBy(e.target.value)}
+						/>
 					</Box>
 					<List>
 						{data.pages.map((page) => {
@@ -115,7 +116,7 @@ const DataList = ({ DataListItem, queryKey, queryFn, createFilter }) => {
 								<DataListItem
 									key={item.id}
 									item={item}
-									searchText={lastSearchText}
+									searchText={searchTextDebounced}
 									refetch={refetch}
 									refetchLength={refetchLength}
 								/>

@@ -42,6 +42,9 @@ const Sessions = () => {
 			});
 			return page;
 		},
+		getNextPageParam: ({ page, total }) => {
+			if (page < total - 1) return page + 1;
+		},
 	});
 
 	const {

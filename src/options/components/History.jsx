@@ -5,7 +5,7 @@ import DataList from "./common/DataList";
 import HistoryListItem from "./History/HistoryListItem";
 
 const History = () => {
-	const queryFn = (searchText, reverse) => {
+	const queryFunctor = (searchText, reverse) => {
 		return async ({ pageParam = 0 }) => {
 			const page = await chrome.runtime.sendMessage({
 				type: "history",
@@ -30,7 +30,7 @@ const History = () => {
 			<DataList
 				DataListItem={HistoryListItem}
 				queryKey="history"
-				queryFn={queryFn}
+				queryFunctor={queryFunctor}
 				createFilter={createFilter}
 			/>
 		</Fragment>

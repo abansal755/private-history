@@ -3,7 +3,7 @@ import DataList from "./common/DataList";
 import FavouritesListItem from "./Favourites/FavouritesListItem";
 
 const Favourites = () => {
-	const queryFn = (searchText, reverse) => {
+	const queryFunctor = (searchText, reverse) => {
 		return async ({ pageParam = 0 }) => {
 			const page = await chrome.runtime.sendMessage({
 				type: "favourites",
@@ -27,7 +27,7 @@ const Favourites = () => {
 			<DataList
 				DataListItem={FavouritesListItem}
 				queryKey="favourites"
-				queryFn={queryFn}
+				queryFunctor={queryFunctor}
 				createFilter={createFilter}
 			/>
 		</Fragment>
