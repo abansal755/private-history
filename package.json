@@ -6,7 +6,8 @@
 	"scripts": {
 		"build": "webpack --config webpack.prod.js",
 		"dev": "webpack --config webpack.dev.js --watch",
-		"serve": "webpack serve --config webpack.dev.js --live-reload --open options.html"
+		"serve": "webpack serve --config webpack.dev.js --live-reload --open options.html",
+		"prettier": "prettier . --write"
 	},
 	"keywords": [],
 	"author": "",
