@@ -1,13 +1,5 @@
 import { Fragment, useEffect, useMemo, useState } from "react";
-import {
-	Box,
-	Button,
-	List,
-	ListItem,
-	Paper,
-	TextField,
-	Typography,
-} from "@mui/material";
+import { Box, Button, List, ListItem, Paper, TextField, Typography } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useInfiniteQuery, useQuery } from "react-query";
 import SortBySelect from "./DataList/SortBySelect";
@@ -28,14 +20,7 @@ const DataList = ({ DataListItem, queryKey, queryFunctor, createFilter }) => {
 		},
 	});
 
-	const {
-		fetchNextPage,
-		hasNextPage,
-		data,
-		isSuccess,
-		isFetchingNextPage,
-		refetch,
-	} = query;
+	const { fetchNextPage, hasNextPage, data, isSuccess, isFetchingNextPage, refetch } = query;
 
 	const lengthQuery = useQuery({
 		queryKey: `${queryKey}_length`,
@@ -49,11 +34,7 @@ const DataList = ({ DataListItem, queryKey, queryFunctor, createFilter }) => {
 		},
 	});
 
-	const {
-		data: length,
-		isSuccess: isLengthAvailable,
-		refetch: refetchLength,
-	} = lengthQuery;
+	const { data: length, isSuccess: isLengthAvailable, refetch: refetchLength } = lengthQuery;
 
 	const visibleLength = useVisibleLength(data);
 
@@ -88,10 +69,7 @@ const DataList = ({ DataListItem, queryKey, queryFunctor, createFilter }) => {
 				</Button>
 			</Box>
 			{isSuccess && (
-				<Paper
-					sx={{ marginY: 2, padding: 2, backgroundColor: grey[900] }}
-					elevation={2}
-				>
+				<Paper sx={{ marginY: 2, padding: 2, backgroundColor: grey[900] }} elevation={2}>
 					<Box
 						sx={{
 							display: "flex",
@@ -104,10 +82,7 @@ const DataList = ({ DataListItem, queryKey, queryFunctor, createFilter }) => {
 								Showing {visibleLength} results out of {length}
 							</Typography>
 						)}
-						<SortBySelect
-							sortBy={sortBy}
-							onChange={(e) => setSortBy(e.target.value)}
-						/>
+						<SortBySelect sortBy={sortBy} onChange={(e) => setSortBy(e.target.value)} />
 					</Box>
 					<List>
 						{data.pages.map((page) => {

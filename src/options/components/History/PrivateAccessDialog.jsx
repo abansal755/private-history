@@ -27,8 +27,8 @@ const PrivateAccessDialog = () => {
 			<DialogTitle>Warning</DialogTitle>
 			<DialogContent>
 				<DialogContentText>
-					This extension is not allowed in private mode. Please allow
-					it in extension settings for smooth functioning.
+					This extension is not allowed in private mode. Please allow it in extension
+					settings for smooth functioning.
 				</DialogContentText>
 			</DialogContent>
 			<DialogActions>

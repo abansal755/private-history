@@ -19,24 +19,15 @@ const queryClient = new QueryClient();
 
 const root = createRoot(document.getElementById("react-target"));
 root.render(
-	<SnackbarProvider
-		maxSnack={3}
-		autoHideDuration={3000}
-		action={SnackbarActions}
-		variant="info"
-	>
+	<SnackbarProvider maxSnack={3} autoHideDuration={3000} action={SnackbarActions} variant="info">
 		<ThemeProvider theme={darkTheme}>
 			<QueryClientProvider client={queryClient}>
-				<MemoryRouter
-					basename="/options.html"
-					initialEntries={drawerUrls}
-					initialIndex={0}
-				>
+				<MemoryRouter basename="/options.html" initialEntries={drawerUrls} initialIndex={0}>
 					<ReactQueryDevtools initialIsOpen={false} />
 					<CssBaseline />
 					<App />
 				</MemoryRouter>
 			</QueryClientProvider>
 		</ThemeProvider>
-	</SnackbarProvider>
+	</SnackbarProvider>,
 );

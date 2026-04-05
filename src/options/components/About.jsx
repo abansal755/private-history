@@ -24,11 +24,7 @@ const About = () => {
 				}}
 				elevation={2}
 			>
-				<Box
-					display="flex"
-					alignItems="baseline"
-					sx={{ marginBottom: 2 }}
-				>
+				<Box display="flex" alignItems="baseline" sx={{ marginBottom: 2 }}>
 					<Typography variant="h6" marginRight={1}>
 						Developed By
 					</Typography>
@@ -37,9 +33,7 @@ const About = () => {
 				<Box>
 					<ActionButton
 						icon={<LinkedInIcon />}
-						onClick={() =>
-							open("https://www.linkedin.com/in/abansal755/")
-						}
+						onClick={() => open("https://www.linkedin.com/in/abansal755/")}
 					>
 						LinkedIn
 					</ActionButton>
@@ -50,10 +44,7 @@ const About = () => {
 					>
 						GitHub
 					</ActionButton>
-					<ActionButton
-						icon={<EmailIcon />}
-						onClick={emailBtnClickHandler}
-					>
+					<ActionButton icon={<EmailIcon />} onClick={emailBtnClickHandler}>
 						Email
 					</ActionButton>
 				</Box>

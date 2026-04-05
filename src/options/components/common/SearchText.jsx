@@ -4,12 +4,7 @@ const SearchText = ({ item, type, searchText }) => {
 	return (
 		<span>
 			{item[type].slice(0, item.match.idx)}
-			<b>
-				{item[type].slice(
-					item.match.idx,
-					item.match.idx + searchText.length
-				)}
-			</b>
+			<b>{item[type].slice(item.match.idx, item.match.idx + searchText.length)}</b>
 			{item[type].slice(item.match.idx + searchText.length)}
 		</span>
 	);

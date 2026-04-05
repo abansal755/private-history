@@ -9,13 +9,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import { drawerStrings, drawerUrls } from "../../../ config";
 
 const OpenDrawer = ({ drawerIdx, setDrawerIdx }) => {
-	const icons = [
-		<HistoryIcon />,
-		<StarIcon />,
-		<LaptopIcon />,
-		<SettingsIcon />,
-		<InfoIcon />,
-	];
+	const icons = [<HistoryIcon />, <StarIcon />, <LaptopIcon />, <SettingsIcon />, <InfoIcon />];
 	return (
 		<Fragment>
 			{drawerStrings.map((str, idx) => (

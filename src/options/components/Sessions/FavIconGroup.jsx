@@ -23,8 +23,7 @@ const FavIconGroup = ({ session }) => {
 		>
 			{(() => {
 				let tabs = session.tabs;
-				if (session.tabs.length > maxLength)
-					tabs = tabs.slice(0, maxLength);
+				if (session.tabs.length > maxLength) tabs = tabs.slice(0, maxLength);
 				return tabs.map((tab, idx) => (
 					<Avatar
 						src={tab.favIconUrl}

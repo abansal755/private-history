@@ -1,11 +1,4 @@
-import {
-	List,
-	ListItem,
-	ListItemButton,
-	ListItemIcon,
-	ListItemText,
-	Paper,
-} from "@mui/material";
+import { List, ListItem, ListItemButton, ListItemIcon, ListItemText, Paper } from "@mui/material";
 import { useState } from "react";
 import { useSnackbar } from "notistack";
 import validateJSON from "../utils/validateJSON";
@@ -19,17 +12,11 @@ const Settings = () => {
 	const { enqueueSnackbar } = useSnackbar();
 
 	const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
-	const [isImportErrorDialogOpen, setIsImportErrorDialogOpen] =
-		useState(false);
-	const [isImportWarningDialogOpen, setIsImportWarningDialogOpen] =
-		useState(false);
+	const [isImportErrorDialogOpen, setIsImportErrorDialogOpen] = useState(false);
+	const [isImportWarningDialogOpen, setIsImportWarningDialogOpen] = useState(false);
 
 	const exportBtnClickHandler = async () => {
-		const data = await chrome.storage.local.get([
-			"history",
-			"favourites",
-			"sessions",
-		]);
+		const data = await chrome.storage.local.get(["history", "favourites", "sessions"]);
 		const blob = new Blob([JSON.stringify(data)]);
 		const blobUrl = URL.createObjectURL(blob);
 
@@ -95,10 +82,7 @@ const Settings = () => {
 						title="Warning"
 						content="Are you sure you want to clear all data?"
 						buttons={["Yes", "No"]}
-						clickHandlers={[
-							clearHandler,
-							() => setIsClearDialogOpen(false),
-						]}
+						clickHandlers={[clearHandler, () => setIsClearDialogOpen(false)]}
 						isDialogOpen={isClearDialogOpen}
 						setIsDialogOpen={setIsClearDialogOpen}
 					/>
@@ -115,9 +99,7 @@ const Settings = () => {
 					</ListItemButton>
 				</ListItem>
 				<ListItem disablePadding>
-					<ListItemButton
-						onClick={() => setIsImportWarningDialogOpen(true)}
-					>
+					<ListItemButton onClick={() => setIsImportWarningDialogOpen(true)}>
 						<ListItemIcon>
 							<UploadIcon sx={{ fontSize: 32 }} />
 						</ListItemIcon>
@@ -130,9 +112,7 @@ const Settings = () => {
 						title="Error"
 						content="Corrupted data found."
 						buttons={["Ok"]}
-						clickHandlers={[
-							() => setIsImportErrorDialogOpen(false),
-						]}
+						clickHandlers={[() => setIsImportErrorDialogOpen(false)]}
 						isDialogOpen={isImportErrorDialogOpen}
 						setIsDialogOpen={setIsImportErrorDialogOpen}
 					/>

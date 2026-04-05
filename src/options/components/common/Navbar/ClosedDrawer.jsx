@@ -1,11 +1,4 @@
-import {
-	Box,
-	IconButton,
-	List,
-	ListItem,
-	Tooltip,
-	Typography,
-} from "@mui/material";
+import { Box, IconButton, List, ListItem, Tooltip, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { useHistory } from "react-router-dom";
@@ -92,9 +85,7 @@ const ClosedDrawer = ({ drawerIdx, setDrawerIdx, innerListHeight }) => {
 								justifyContent: "center",
 							}}
 						>
-							<Typography variant="h5">
-								{char.toUpperCase()}
-							</Typography>
+							<Typography variant="h5">{char.toUpperCase()}</Typography>
 						</ListItem>
 					))}
 				</List>

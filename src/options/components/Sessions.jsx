@@ -20,32 +20,27 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import SortBySelect from "./common/DataList/SortBySelect";
 import { grey } from "@mui/material/colors";
 import useVisibleLength from "../hooks/useVisibleLength";
+import { format } from "date-fns";
 
 const Sessions = () => {
 	const { enqueueSnackbar } = useSnackbar();
 	const [sortBy, setSortBy] = useState("desc");
 
-	const {
-		fetchNextPage,
-		hasNextPage,
-		data,
-		isSuccess,
-		isFetchingNextPage,
-		refetch,
-	} = useInfiniteQuery({
-		queryKey: ["sessions"],
-		queryFn: async ({ pageParam = 0 }) => {
-			const page = await chrome.runtime.sendMessage({
-				type: "sessions",
-				method: "getPage",
-				args: [pageParam, sortBy === "desc"],
-			});
-			return page;
-		},
-		getNextPageParam: ({ page, total }) => {
-			if (page < total - 1) return page + 1;
-		},
-	});
+	const { fetchNextPage, hasNextPage, data, isSuccess, isFetchingNextPage, refetch } =
+		useInfiniteQuery({
+			queryKey: ["sessions"],
+			queryFn: async ({ pageParam = 0 }) => {
+				const page = await chrome.runtime.sendMessage({
+					type: "sessions",
+					method: "getPage",
+					args: [pageParam, sortBy === "desc"],
+				});
+				return page;
+			},
+			getNextPageParam: ({ page, total }) => {
+				if (page < total - 1) return page + 1;
+			},
+		});
 
 	const {
 		data: length,
@@ -76,7 +71,7 @@ const Sessions = () => {
 				await refetchLength();
 				enqueueSnackbar("Removed from sessions");
 			},
-		}
+		},
 	);
 
 	const visibleLength = useVisibleLength(data);
@@ -123,13 +118,8 @@ const Sessions = () => {
 					{data.pages.map((page) => {
 						if (!page.data) return;
 						return page.data.map((session, idx) => (
-							<Accordion
-								key={session.id}
-								sx={{ backgroundColor: grey[900] }}
-							>
-								<AccordionSummary
-									expandIcon={<ExpandMoreIcon />}
-								>
+							<Accordion key={session.id} sx={{ backgroundColor: grey[900] }}>
+								<AccordionSummary expandIcon={<ExpandMoreIcon />}>
 									<Box
 										display="flex"
 										justifyContent="space-between"
@@ -144,37 +134,28 @@ const Sessions = () => {
 													<Typography
 														variant="subtitle1"
 														sx={{
-															whiteSpace:
-																"nowrap",
+															whiteSpace: "nowrap",
 														}}
 													>
-														{new Date(
-															session.timestamp
-														).toLocaleTimeString()}
+														{format(session.timestamp, "KK:mm a")}
 													</Typography>
 												</Box>
 												<Box>
 													<Typography variant="subtitle2">
-														{new Date(
-															session.timestamp
-														).toLocaleDateString()}
+														{format(session.timestamp, "do MMM yyyy")}
 													</Typography>
 												</Box>
 											</Stack>
 										</Box>
 										<Box>
 											<Button
-												onClick={openInIncognitoBtnClickHandler(
-													session
-												)}
+												onClick={openInIncognitoBtnClickHandler(session)}
 											>
 												Open in Incognito
 											</Button>
 											<Tooltip title="Remove">
 												<IconButton
-													onClick={deleteBtnClickHandler(
-														session
-													)}
+													onClick={deleteBtnClickHandler(session)}
 												>
 													<DeleteIcon />
 												</IconButton>

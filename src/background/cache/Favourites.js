@@ -24,9 +24,7 @@ export default class Favourites extends FilteredArrayCache {
 
 		const filters = this.getFilters();
 		for (const searchText in filters) {
-			filters[searchText] = filters[searchText].filter(
-				(item) => item.id !== id
-			);
+			filters[searchText] = filters[searchText].filter((item) => item.id !== id);
 		}
 	}
 }

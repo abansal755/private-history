@@ -22,11 +22,6 @@ export default class ArrayCache extends Cache {
 
 	async getPage(page, reverse = true) {
 		const data = await this.getCache();
-		return getPageFromArray(
-			data,
-			this.constructor.getPageSize(),
-			page,
-			reverse
-		);
+		return getPageFromArray(data, this.constructor.getPageSize(), page, reverse);
 	}
 }

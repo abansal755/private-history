@@ -33,12 +33,7 @@ export default class ObjectCache extends Cache {
 
 	async getPage(page, reverse = true) {
 		await this._hydrateArr();
-		return getPageFromArray(
-			this._arr,
-			this.constructor.getPageSize(),
-			page,
-			reverse
-		);
+		return getPageFromArray(this._arr, this.constructor.getPageSize(), page, reverse);
 	}
 
 	async getLength() {

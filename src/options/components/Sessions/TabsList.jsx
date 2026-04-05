@@ -23,10 +23,8 @@ const TabsList = ({ session }) => {
 							cursor: "pointer",
 							borderTopLeftRadius: idx === 0 ? 5 : 0,
 							borderTopRightRadius: idx === 0 ? 5 : 0,
-							borderBottomLeftRadius:
-								idx === session.tabs.length - 1 ? 5 : 0,
-							borderBottomRightRadius:
-								idx === session.tabs.length - 1 ? 5 : 0,
+							borderBottomLeftRadius: idx === session.tabs.length - 1 ? 5 : 0,
+							borderBottomRightRadius: idx === session.tabs.length - 1 ? 5 : 0,
 							transition: "background-color 300ms",
 						},
 						"&:hover": {
@@ -35,9 +33,7 @@ const TabsList = ({ session }) => {
 					}}
 					onClick={tabClickHandler(tab)}
 				>
-					{tab.favIconUrl && (
-						<img src={tab.favIconUrl} width="32" height="32" />
-					)}
+					{tab.favIconUrl && <img src={tab.favIconUrl} width="32" height="32" />}
 					{!tab.favIconUrl && <PublicIcon sx={{ fontSize: 32 }} />}
 					<ListItemText
 						primary={tab.title}

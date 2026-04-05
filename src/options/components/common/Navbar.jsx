@@ -1,11 +1,4 @@
-import {
-	Drawer,
-	IconButton,
-	List,
-	ListItem,
-	Paper,
-	Tooltip,
-} from "@mui/material";
+import { Drawer, IconButton, List, ListItem, Paper, Tooltip } from "@mui/material";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { useHistory } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
@@ -30,9 +23,7 @@ const Navbar = () => {
 	const [innerListHeight, setInnerListHeight] = useState(null);
 
 	useEffect(() => {
-		let paddingY = getComputedStyle(outerListRef.current).getPropertyValue(
-			"padding-top"
-		);
+		let paddingY = getComputedStyle(outerListRef.current).getPropertyValue("padding-top");
 		paddingY = paddingY.slice(0, -2);
 		paddingY = parseInt(paddingY);
 
@@ -61,11 +52,8 @@ const Navbar = () => {
 							<IconButton
 								onClick={() => setIsDrawerOpen((prev) => !prev)}
 								sx={{
-									transform: `rotate(${
-										isDrawerOpen ? 0 : 180
-									}deg)`,
-									transition:
-										"transform 300ms, background-color 300ms",
+									transform: `rotate(${isDrawerOpen ? 0 : 180}deg)`,
+									transition: "transform 300ms, background-color 300ms",
 								}}
 							>
 								<NavigateBeforeIcon />
@@ -73,10 +61,7 @@ const Navbar = () => {
 						</Tooltip>
 					</ListItem>
 					{isDrawerOpen && (
-						<OpenDrawer
-							drawerIdx={drawerIdx}
-							setDrawerIdx={setDrawerIdx}
-						/>
+						<OpenDrawer drawerIdx={drawerIdx} setDrawerIdx={setDrawerIdx} />
 					)}
 					{!isDrawerOpen && (
 						<ClosedDrawer

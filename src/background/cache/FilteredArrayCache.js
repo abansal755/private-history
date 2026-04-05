@@ -27,12 +27,7 @@ export default class FilteredArrayCache extends ArrayCache {
 		}
 		const data = this._filters[searchText];
 		if (data === undefined) throw new Error("Filter not created");
-		return getPageFromArray(
-			data,
-			this.constructor.getPageSize(),
-			page,
-			reverse
-		);
+		return getPageFromArray(data, this.constructor.getPageSize(), page, reverse);
 	}
 
 	async getFilteredLength(searchText) {

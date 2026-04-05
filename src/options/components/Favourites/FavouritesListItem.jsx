@@ -1,12 +1,4 @@
-import {
-	Box,
-	IconButton,
-	ListItem,
-	ListItemText,
-	Stack,
-	Tooltip,
-	Typography,
-} from "@mui/material";
+import { Box, IconButton, ListItem, ListItemText, Stack, Tooltip, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { grey } from "@mui/material/colors";
 import PublicIcon from "@mui/icons-material/Public";
@@ -14,6 +6,7 @@ import SearchText from "../common/SearchText";
 import { useMutation } from "react-query";
 import { useSnackbar } from "notistack";
 import { memo } from "react";
+import { format } from "date-fns";
 
 const FavouritesListItem = ({ item, searchText, refetch, refetchLength }) => {
 	const { enqueueSnackbar } = useSnackbar();
@@ -34,7 +27,7 @@ const FavouritesListItem = ({ item, searchText, refetch, refetchLength }) => {
 				await refetchLength();
 				enqueueSnackbar("Removed from favourites");
 			},
-		}
+		},
 	);
 
 	const favouriteBtnClickHandler = (item, event) => {
@@ -52,9 +45,7 @@ const FavouritesListItem = ({ item, searchText, refetch, refetchLength }) => {
 			key={item.id}
 			secondaryAction={
 				<Tooltip title="Remove">
-					<IconButton
-						onClick={(e) => favouriteBtnClickHandler(item, e)}
-					>
+					<IconButton onClick={(e) => favouriteBtnClickHandler(item, e)}>
 						<DeleteIcon />
 					</IconButton>
 				</Tooltip>
@@ -70,25 +61,11 @@ const FavouritesListItem = ({ item, searchText, refetch, refetchLength }) => {
 			}}
 			onClick={() => itemClickHandler(item)}
 		>
-			{item.favIconUrl && (
-				<img src={item.favIconUrl} width="32" height="32" />
-			)}
+			{item.favIconUrl && <img src={item.favIconUrl} width="32" height="32" />}
 			{!item.favIconUrl && <PublicIcon sx={{ fontSize: 32 }} />}
 			<ListItemText
-				primary={
-					<SearchText
-						item={item}
-						type="title"
-						searchText={searchText}
-					/>
-				}
-				secondary={
-					<SearchText
-						item={item}
-						type="url"
-						searchText={searchText}
-					/>
-				}
+				primary={<SearchText item={item} type="title" searchText={searchText} />}
+				secondary={<SearchText item={item} type="url" searchText={searchText} />}
 				sx={{
 					marginX: 2,
 					overflow: "hidden",
@@ -102,13 +79,11 @@ const FavouritesListItem = ({ item, searchText, refetch, refetchLength }) => {
 							whiteSpace: "nowrap",
 						}}
 					>
-						{timestamp.toLocaleTimeString()}
+						{format(timestamp, "KK:mm a")}
 					</Typography>
 				</Box>
 				<Box>
-					<Typography variant="subtitle2">
-						{timestamp.toLocaleDateString()}
-					</Typography>
+					<Typography variant="subtitle2">{format(timestamp, "do MMM yyyy")}</Typography>
 				</Box>
 			</Stack>
 		</ListItem>

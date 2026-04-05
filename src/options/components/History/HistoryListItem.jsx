@@ -1,12 +1,4 @@
-import {
-	Box,
-	IconButton,
-	ListItem,
-	ListItemText,
-	Stack,
-	Tooltip,
-	Typography,
-} from "@mui/material";
+import { Box, IconButton, ListItem, ListItemText, Stack, Tooltip, Typography } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import { grey } from "@mui/material/colors";
 import PublicIcon from "@mui/icons-material/Public";
@@ -14,6 +6,7 @@ import SearchText from "../common/SearchText";
 import { useMutation } from "react-query";
 import { useSnackbar } from "notistack";
 import { memo } from "react";
+import { format } from "date-fns";
 
 const HistoryListItem = ({ item, searchText }) => {
 	const { enqueueSnackbar } = useSnackbar();
@@ -32,7 +25,7 @@ const HistoryListItem = ({ item, searchText }) => {
 			onSuccess: () => {
 				enqueueSnackbar("Added to favourites");
 			},
-		}
+		},
 	);
 
 	const favouriteBtnClickHandler = (item, event) => {
@@ -50,9 +43,7 @@ const HistoryListItem = ({ item, searchText }) => {
 			key={item.id}
 			secondaryAction={
 				<Tooltip title="Favourite">
-					<IconButton
-						onClick={(e) => favouriteBtnClickHandler(item, e)}
-					>
+					<IconButton onClick={(e) => favouriteBtnClickHandler(item, e)}>
 						<StarIcon />
 					</IconButton>
 				</Tooltip>
@@ -68,25 +59,11 @@ const HistoryListItem = ({ item, searchText }) => {
 			}}
 			onClick={() => itemClickHandler(item)}
 		>
-			{item.favIconUrl && (
-				<img src={item.favIconUrl} width="32" height="32" />
-			)}
+			{item.favIconUrl && <img src={item.favIconUrl} width="32" height="32" />}
 			{!item.favIconUrl && <PublicIcon sx={{ fontSize: 32 }} />}
 			<ListItemText
-				primary={
-					<SearchText
-						item={item}
-						type="title"
-						searchText={searchText}
-					/>
-				}
-				secondary={
-					<SearchText
-						item={item}
-						type="url"
-						searchText={searchText}
-					/>
-				}
+				primary={<SearchText item={item} type="title" searchText={searchText} />}
+				secondary={<SearchText item={item} type="url" searchText={searchText} />}
 				sx={{
 					marginX: 2,
 					overflow: "hidden",
@@ -100,13 +77,11 @@ const HistoryListItem = ({ item, searchText }) => {
 							whiteSpace: "nowrap",
 						}}
 					>
-						{timestamp.toLocaleTimeString()}
+						{format(timestamp, "KK:mm a")}
 					</Typography>
 				</Box>
 				<Box>
-					<Typography variant="subtitle2">
-						{timestamp.toLocaleDateString()}
-					</Typography>
+					<Typography variant="subtitle2">{format(timestamp, "do MMM yyyy")}</Typography>
 				</Box>
 			</Stack>
 		</ListItem>
